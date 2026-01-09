@@ -5,6 +5,7 @@
  */
 package applicationcrud.ui;
 
+import applicationcrud.model.Customer;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -42,6 +43,8 @@ public class AccountsController {
     
     private Stage stage;
     
+    private Customer customer;
+    
     private static final Logger LOGGER=Logger.getLogger("applicationcrud.ui");
     
     public void init(Stage stage, Parent root) {
@@ -53,6 +56,7 @@ public class AccountsController {
         stage.setTitle("BankApp");
         //Ventana no redimensionable
         stage.setResizable(false);
+        //Asociación de manejadores a properties
         
         //Mostrar la ventana
         stage.show();
@@ -64,24 +68,12 @@ public class AccountsController {
                  .showAndWait();
         }
     }
-    @FXML
-    private void handleExit() {
-        stage.close();
+    
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        lbMessage.setText("Welcome " + customer.getEmail());
+        
     }
 
-    @FXML
-    private void handlePost() {
-        lbMessage.setText("Create account selected.");
-    }
-
-    @FXML
-    private void handleUpdate() {
-        lbMessage.setText("Update account selected.");
-    }
-
-    @FXML
-    private void handleDelete() {
-        lbMessage.setText("Delete account selected.");
-    }
 
 }
