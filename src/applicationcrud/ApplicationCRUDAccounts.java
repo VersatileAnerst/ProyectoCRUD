@@ -5,31 +5,28 @@
  */
 package applicationcrud;
 
-import applicationcrud.ui.Sign_InController;
-
+import applicationcrud.ui.AccountsController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
  *
  * @author daniel
  */
-public class ApplicationCRUDSign_In extends Application {
-
-@Override
+public class ApplicationCRUDAccounts extends Application {
+    
+    @Override
 public void start(Stage stage) throws Exception {
 
-FXMLLoader loader= new FXMLLoader(getClass().getResource("ui/DisenoSignIn.fxml"));
+FXMLLoader loader= new FXMLLoader(getClass().getResource("ui/Accounts.fxml"));
 Parent root = (Parent)loader.load();
 
-    Sign_InController controller =loader.getController();
+    AccountsController controller =loader.getController();
     controller.init(stage, root);
     
         }
-
 
     /**
      * @param args the command line arguments
