@@ -236,7 +236,7 @@ public class Sign_InController {
         
         stage.show();//Abre la nueva ventana
         
-        LOGGER.info("Result window initialized");
+        LOGGER.info("Accounts window initialized");
         
         }catch (NotAuthorizedException ne) {//Captura el error 403 
             LOGGER.warning(ne.getLocalizedMessage());

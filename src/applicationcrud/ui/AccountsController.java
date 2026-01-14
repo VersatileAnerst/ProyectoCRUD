@@ -15,6 +15,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -24,6 +25,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -64,10 +66,10 @@ public class AccountsController {
 
     private Customer customer;
     
-    private AccountRESTClient accountClient;
+    private AccountRESTClient client = new AccountRESTClient();
     
-    private ObservableList<Account> accountsData;
-
+    private ObservableList<Customer> usersData;
+    
     private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
 
     public void init(Stage stage, Parent root) {
@@ -87,10 +89,16 @@ public class AccountsController {
             colBeginBalance.setCellValueFactory(new PropertyValueFactory<>("beginBalance"));
             colType.setCellValueFactory(new PropertyValueFactory<>("type"));
             colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+            //asociar eventos a manejadores
+            btMovement.setOnAction(this::handleBtMovementOnAction);
             //Listener
             tAccounts.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleAccountsTableSelectionChanged);
 
+            //Carga de datos a las columnas
+            tAccounts.setItems(FXCollections.observableArrayList(
+            client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
+            
             //Establecer el botón de Exit como cancelButton. 
             btExit.setCancelButton(true);
             // Botones deshabilitados
@@ -108,24 +116,16 @@ public class AccountsController {
                     .showAndWait();
         }
     }
-
+    
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        loadTestData();
+        loadAccounts();
     }
 
     private void loadAccounts() {
         try {
-            accountClient = new AccountRESTClient();
-
-            List<Account> accountList =
-                    accountClient.findAccountsByCustomerId_XML(
-                            List.class,
-                            customer.getId().toString());
-
-            accountsData = FXCollections.observableArrayList(accountList);
-
-            tAccounts.setItems(accountsData);
+            
+            
         } catch (Exception e) {
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
@@ -143,21 +143,15 @@ public class AccountsController {
             btMovement.setDisable(false);
         }
     }
-    private void loadTestData() {
-    accountsData = FXCollections.observableArrayList();
-
-    Account a = new Account();
-    a.setId(1L);
-    a.setDescription("Account 1 Test");
-    a.setBalance(1000.0);
-    a.setBeginBalance(1000.0);
-    a.setCreditLine(0.0); // Cuenta estándar
-    a.setType(applicationcrud.model.AccountType.STANDARD);
-    a.setBeginBalanceTimestamp(new java.util.Date());
-
-    accountsData.add(a);
- 
-    tAccounts.setItems(accountsData);
-}
+    private void handleBtMovementOnAction(){
+        
+        /*Abro la ventana movement si el Cliente escoge una cuenta
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Accounts.fxml"));
+        Parent root = (Parent)loader.load();
+        AccountsController controller =loader.getController();
+        controller.init(stage, root);
+        controller.setCustomer(customer);*/
+        
+    }
 
 }
