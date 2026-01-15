@@ -7,16 +7,6 @@ package applicationcrud.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import static javax.persistence.CascadeType.MERGE;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -26,11 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * movement and amount of the movement. 
  * @author Javier Martín Uría
  */
-@Entity
-@Table(name="movement",schema="bankdb")
-@NamedQuery(name="findMovementsByAccount",
-            query="SELECT m FROM Movement m WHERE m.account = :account"
-)
+
 @XmlRootElement
 public class Movement implements Serializable {
 
@@ -38,18 +24,17 @@ public class Movement implements Serializable {
     /**
      * Identification field for Movement. 
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    
     private Long id;
     /**
      * Account for the movement.
      */
-    @ManyToOne
+    
     private Account account;
     /**
      * Timestamp for the movement.
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    
     //@JsonSerialize(as=Date.class)
     //@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date timestamp;

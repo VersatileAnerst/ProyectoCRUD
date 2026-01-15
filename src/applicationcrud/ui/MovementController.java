@@ -8,6 +8,8 @@ package applicationcrud.ui;
 
   
 
+import applicationcrud.logic.MovementRESTClient;
+import applicationcrud.model.Account;
 import applicationcrud.model.Movement;
 import javafx.beans.value.ChangeListener; 
 
@@ -24,12 +26,15 @@ import javafx.scene.control.*;
   
 
 import java.lang.Double; 
+import java.lang.reflect.Type;
 
 import java.net.URL; 
 
 import java.time.LocalDate; 
+import java.util.List;
 
 import java.util.ResourceBundle; 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +42,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -101,9 +107,14 @@ public class MovementController   {
 
     private Label lblInfo; 
     
-private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
+    private Account account;
+    
+    private MovementRESTClient client = new MovementRESTClient();
+    
+     private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
 
-  public void init(Stage stage, Parent root) {
+     
+     public void init(Stage stage, Parent root) {
         try {
             LOGGER.info("Initializing Movemnet window.");
             Scene scene = new Scene(root);
@@ -114,7 +125,8 @@ private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
             stage.setResizable(false);
             //FACTORIAS DE CELDA
             //LISTENER
-
+            tblMovements.getSelectionModel().selectedItemProperty().
+                    addListener(this:: handleMovementTableSelectionChanged);
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Movement window initialized");
@@ -124,6 +136,21 @@ private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
                     "Error Opening Window: " + e.getLocalizedMessage())
                     .showAndWait();
         }
+       
+    }
+     public void setAccount(Account account){
+         this.account = account;
+         //Carga datos
+         Movement movement = new Movement();
+         tblMovements.setItems(FXCollections.observableArrayList(
+            client.findMovementByAccount_XML(new GenericType<List<Movement>>() {}, movement.getId().toString())));
+     }
+     
+     private void handleMovementTableSelectionChanged(ObservableValue observable,
+                                                     Object oldValue,
+                                                     Object newValue) {
+         
+        
     }
 /**
  * 
@@ -241,7 +268,7 @@ private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
  */
     private void loadInitialData() { 
 
-  
+          
 
         //  llamada REST 
 
@@ -249,15 +276,22 @@ private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
 
     } 
     public void loadMovements() { 
-    try { 
-         
-        Movement[] movements = Movement.findMovementByMovement_XML(Movement[].class, "MovementRestClient"); 
-        ObservableList<Movement> dataMovement = FXCollections.observableArrayList(movements); 
-        tblMovement.setItems(dataMovement); 
-    } catch (Exception e) { 
-        handlelblError("Error to charge movements"); 
-        LOGGER.info("Error to charge movements" + e.getMessage()); 
-    } 
+        
+        //Movement movement = new Movement();
+        //Carga de datos a las columnas
+            //tblMovements.setItems(FXCollections.observableArrayList(
+            //client.findMovementByAccount_XML(new GenericType<List<Movement>>() {}, movement.getId().toString())));
+    //try { 
+         //GenericType Movement = null;
+        //Movement = new GenericType((Type) Movement);
+      //  Movement[] movement = Movement.findMovementByAccount_XML(Movement[].class, "MovementRESTClient"); 
+       // ObservableList<Movement> dataMovement = FXCollections.observableArrayList(MovementRESTClient.findMovementBYAccount_XML(
+         //new GenericType<List<Movement>>() {}));
+        //tblMovements.setItems(dataMovement); 
+    //} catch (Exception e) { 
+       // handlelblError("Error to charge movements"); 
+      //  LOGGER.log(Level.INFO, "Error to charge movements{0}", e.getMessage()); 
+    //} 
 } 
 
 
@@ -275,26 +309,31 @@ private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
     @FXML 
 
     private void handleCreate() { 
-
         
-
-    } 
-
-  
-
-    @FXML 
-
-    private void handleDelete() { 
-
-       
-
-    } 
+    }
 
     private void handlelblError(String error_to_charge_movements) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-} 
+        
+
+    
+
+  
+
+    @FXML 
+
+     private void handleDelete() { 
+
+       
+
+     } 
+}
+
+   
+
+      
 
  
 
