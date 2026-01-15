@@ -7,17 +7,8 @@ package applicationcrud.model;
 
 import java.io.Serializable;
 import java.util.Set;
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
 import javax.persistence.Entity;
 import static javax.persistence.FetchType.EAGER;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -27,17 +18,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Javier Martín Uría
  */
 @Entity
-@Table(name="customer",
-       schema="bankdb",
-       uniqueConstraints=@UniqueConstraint(columnNames={"email"}))
-@NamedQueries({
-    @NamedQuery(name="findAllCustomers",
-                query="SELECT c FROM Customer c"),
-    @NamedQuery(name="findCustomerByEmailPassword",
-                query="SELECT c FROM Customer c WHERE c.email = :email and c.password= :password "),
-    @NamedQuery(name="findCustomerByEmail",
-                query="SELECT c FROM Customer c WHERE c.email = :email ")    
-})
 @XmlRootElement
 public class Customer implements Serializable {
 
@@ -45,7 +25,7 @@ public class Customer implements Serializable {
     /**
      * Identification field for client.
      */
-    @Id
+    
     private Long id;
     /**
      * First name of the customer.
@@ -90,7 +70,7 @@ public class Customer implements Serializable {
     /**
      * Relational field for customer's accounts.
      */
-    @ManyToMany(mappedBy="customers",cascade=MERGE,fetch=EAGER)
+
     private Set<Account> accounts;
     /**
      * 

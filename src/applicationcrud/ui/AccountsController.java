@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -67,9 +65,7 @@ public class AccountsController {
     private Customer customer;
     
     private AccountRESTClient client = new AccountRESTClient();
-    
-    private ObservableList<Customer> usersData;
-    
+        
     private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
 
     public void init(Stage stage, Parent root) {
@@ -90,14 +86,12 @@ public class AccountsController {
             colType.setCellValueFactory(new PropertyValueFactory<>("type"));
             colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
             //asociar eventos a manejadores
-            btMovement.setOnAction(this::handleBtMovementOnAction);
+            //btMovement.setOnAction(this::handleBtMovementOnAction);
             //Listener
             tAccounts.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleAccountsTableSelectionChanged);
 
-            //Carga de datos a las columnas
-            tAccounts.setItems(FXCollections.observableArrayList(
-            client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
+            
             
             //Establecer el botón de Exit como cancelButton. 
             btExit.setCancelButton(true);
@@ -114,25 +108,17 @@ public class AccountsController {
             new Alert(Alert.AlertType.ERROR,
                     "Error Opening Window: " + e.getLocalizedMessage())
                     .showAndWait();
-        }
+            }
     }
     
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        loadAccounts();
+        //Carga de datos a las columnas
+            tAccounts.setItems(FXCollections.observableArrayList(
+            client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
     }
 
-    private void loadAccounts() {
-        try {
-            
-            
-        } catch (Exception e) {
-            LOGGER.warning(e.getLocalizedMessage());
-            new Alert(Alert.AlertType.ERROR,
-                    "Error loading Accounts: " + e.getLocalizedMessage())
-                    .showAndWait();
-        }
-    }
+    
     private void handleAccountsTableSelectionChanged(ObservableValue observable,
                                                      Object oldValue,
                                                      Object newValue) {
@@ -143,15 +129,15 @@ public class AccountsController {
             btMovement.setDisable(false);
         }
     }
-    private void handleBtMovementOnAction(){
+    /*private void handleBtMovementOnAction(){
         
         /*Abro la ventana movement si el Cliente escoge una cuenta
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Accounts.fxml"));
         Parent root = (Parent)loader.load();
         AccountsController controller =loader.getController();
         controller.init(stage, root);
-        controller.setCustomer(customer);*/
+        controller.setCustomer(customer)
         
-    }
+    }*/
 
 }
