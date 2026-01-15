@@ -231,11 +231,12 @@ public class Sign_InController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Accounts.fxml"));
         Parent root = (Parent)loader.load();
         AccountsController controller =loader.getController();
-        
-        controller.init(stage, root);
+        Stage accountStage = new Stage(); 
+
+        controller.init(accountStage, root);
         controller.setCustomer(customer);
       
-        stage.show();//Abre la nueva ventana
+        accountStage.show();//Abre la nueva ventana
         
         LOGGER.info("Accounts window initialized");
         

@@ -7,7 +7,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
    <children>
-      <TableView fx:id="tAccounts" layoutX="76.0" layoutY="59.0">
+      <TableView fx:id="tblAccounts" layoutX="76.0" layoutY="59.0">
         <columns>
           <TableColumn fx:id="colId" prefWidth="110.0" text="ID" />
           <TableColumn fx:id="colDescription" prefWidth="140.0" text="Description" />

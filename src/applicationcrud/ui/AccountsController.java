@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.GenericType;
 
 /**
@@ -34,7 +36,7 @@ import javax.ws.rs.core.GenericType;
 public class AccountsController {
 
     @FXML
-    private TableView<Account> tAccounts;
+    private TableView<Account> tblAccounts;
     @FXML
     private TableColumn<Account, Long> colId;
     @FXML
@@ -90,10 +92,11 @@ public class AccountsController {
             //asociar eventos a manejadores
             //btMovement.setOnAction(this::handleBtMovementOnAction);
             //Listener
-            tAccounts.getSelectionModel().selectedItemProperty()
+            tblAccounts.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleAccountsTableSelectionChanged);
             
-            tAccounts.getItems().get(tAccounts.getSelectionModel().getSelectedItem());
+            btMovement.setOnAction(this::handleBtMovementOnAction);
+            
             //Establecer el botón de Exit como cancelButton. 
             btExit.setCancelButton(true);
             // Botones deshabilitados
@@ -119,7 +122,7 @@ public class AccountsController {
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //Carga de datos a las columnas
-            tAccounts.setItems(FXCollections.observableArrayList(
+            tblAccounts.setItems(FXCollections.observableArrayList(
             client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
     }
 
@@ -191,21 +194,29 @@ public class AccountsController {
                     .showAndWait();
         }
     }
-    private void handleBtMovementOnAction(){
+    @FXML
+    private void handleBtMovementOnAction(ActionEvent event){
         try{
         Account selectedAccount =
-                tAccounts.getSelectionModel().getSelectedItem();
+                tblAccounts.getSelectionModel().getSelectedItem();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Movement.fxml"));
         Parent root = (Parent)loader.load();
         MovementController controller =loader.getController();
+        Stage movementStage = new Stage(); 
         
-        controller.init(stage, root);
+        controller.init(movementStage, root);
         controller.setAccount(selectedAccount);
+        movementStage.show();
+        
+        }catch (InternalServerErrorException se) {//Captura los errores 500
+            LOGGER.warning(se.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "Internal server error").showAndWait();
         }catch (Exception e){//Captura el resto de excepciones
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
-                 "Sign In error").showAndWait();
+                 "Movement Button error").showAndWait();
         }
         
     }
