@@ -14,10 +14,12 @@ import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -90,9 +92,8 @@ public class AccountsController {
             //Listener
             tAccounts.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleAccountsTableSelectionChanged);
-
             
-            
+            tAccounts.getItems().get(tAccounts.getSelectionModel().getSelectedItem());
             //Establecer el botón de Exit como cancelButton. 
             btExit.setCancelButton(true);
             // Botones deshabilitados
@@ -111,6 +112,10 @@ public class AccountsController {
             }
     }
     
+    /**
+     * Este metodo establece el customer del signIn y carga los datos de las cuentas
+     * @param customer 
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
         //Carga de datos a las columnas
@@ -118,7 +123,12 @@ public class AccountsController {
             client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
     }
 
-    
+    /**
+     * Este metodo actualiza la vista de la tabla
+     * @param observable
+     * @param oldValue
+     * @param newValue 
+     */
     private void handleAccountsTableSelectionChanged(ObservableValue observable,
                                                      Object oldValue,
                                                      Object newValue) {
@@ -129,15 +139,75 @@ public class AccountsController {
             btMovement.setDisable(false);
         }
     }
-    /*private void handleBtMovementOnAction(){
+    
+    private void handleBtExitOnAction(){
+        try{
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, 
+                "Are you sure you want to Sign Out", 
+                ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirm Exit");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            Stage stage = (Stage) btExit.getScene().getWindow();
+            stage.close();
+        }
+        }catch(Exception e){
+            LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "Error Signing Out: " + e.getLocalizedMessage())
+                 .showAndWait();
+        }
+    }
+    
+    private void handleBtPostOnAction(){
+        try{
+            
+        }catch(Exception e){
+            LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                    "Error creating new Account:" + e.getLocalizedMessage())
+                    .showAndWait();
+        }
         
-        /*Abro la ventana movement si el Cliente escoge una cuenta
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Accounts.fxml"));
+    }
+    private void handleBtUpdateOnAction(){
+        try{
+            
+        }catch(Exception e){
+            LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                    "Error Updating Account:" + e.getLocalizedMessage())
+                    .showAndWait();
+        }
+    }
+    private void handleBtDeleteOnAction(){
+        try{
+            
+            
+        }catch(Exception e){
+            LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                    "Error Deleting Account:" + e.getLocalizedMessage())
+                    .showAndWait();
+        }
+    }
+    private void handleBtMovementOnAction(){
+        try{
+        Account selectedAccount =
+                tAccounts.getSelectionModel().getSelectedItem();
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Movement.fxml"));
         Parent root = (Parent)loader.load();
-        AccountsController controller =loader.getController();
-        controller.init(stage, root);
-        controller.setCustomer(customer)
+        MovementController controller =loader.getController();
         
-    }*/
+        controller.init(stage, root);
+        controller.setAccount(selectedAccount);
+        }catch (Exception e){//Captura el resto de excepciones
+            LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "Sign In error").showAndWait();
+        }
+        
+    }
 
 }
