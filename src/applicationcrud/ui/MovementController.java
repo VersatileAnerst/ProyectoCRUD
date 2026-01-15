@@ -124,6 +124,14 @@ public class MovementController   {
             //Ventana no redimensionable
             stage.setResizable(false);
             //FACTORIAS DE CELDA
+            
+        colDate.setCellValueFactory(new PropertyValueFactory<>("date")); 
+
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("description")); 
+
+        colAmount.setCellValueFactory(new PropertyValueFactory<>("amount")); 
+
+        colBalance.setCellValueFactory(new PropertyValueFactory<>("balance")); 
             //LISTENER
             tblMovements.getSelectionModel().selectedItemProperty().
                     addListener(this:: handleMovementTableSelectionChanged);
@@ -141,9 +149,9 @@ public class MovementController   {
      public void setAccount(Account account){
          this.account = account;
          //Carga datos
-         Movement movement = new Movement();
+         
          tblMovements.setItems(FXCollections.observableArrayList(
-            client.findMovementByAccount_XML(new GenericType<List<Movement>>() {}, movement.getId().toString())));
+            client.findMovementByAccount_XML(new GenericType<List<Movement>>() {}, account.getId().toString())));
      }
      
      private void handleMovementTableSelectionChanged(ObservableValue observable,
@@ -180,13 +188,6 @@ public class MovementController   {
 
   
 
-        colDate.setCellValueFactory(new PropertyValueFactory<>("date")); 
-
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("description")); 
-
-        colAmount.setCellValueFactory(new PropertyValueFactory<>("amount")); 
-
-        colBalance.setCellValueFactory(new PropertyValueFactory<>("balance")); 
 
   
 
