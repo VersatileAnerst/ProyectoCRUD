@@ -1,59 +1,127 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?> 
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+  
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.MovementController">
+<?import javafx.scene.control.*?> 
 
-    <!-- TOP: Filtros -->
-    <top>
-        <HBox spacing="10">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-            </padding>
-           <children>
-   
-               <Label text="From:" />
-               <DatePicker fx:id="dpFrom" />
-   
-               <Label text="To:" />
-               <DatePicker fx:id="dpTo" />
-   
-               <Button fx:id="btnSearch" onAction="#handleSearch" text="Buscar" />
-   
-               <Label fx:id="lblInfo" />
-           </children>
-        </HBox>
-    </top>
+<?import javafx.scene.layout.*?> 
 
-    <!-- CENTER: Tabla -->
-    <center>
-        <TableView fx:id="tblMovements">
-            <columns>
-                <TableColumn fx:id="colDate" prefWidth="150.0" text="Fecha" />
-                <TableColumn fx:id="colDescription" prefWidth="150.0" text="Descripción" />
-                <TableColumn fx:id="colAmount" prefWidth="150.0" text="Importe" />
-                <TableColumn fx:id="colBalance" prefWidth="150.0" text="Saldo" />
-            </columns>
-        </TableView>
-    </center>
+  
 
-    <!-- BOTTOM: Botones -->
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" spacing="10">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-            </padding>
-           <children>
-   
-               <Button fx:id="btnCreate" onAction="#handleCreate" text="Nuevo Movimiento" />
-   
-               <Button fx:id="btnDelete" disable="true" onAction="#handleDelete" text="Eliminar Último" />
-           </children>
-        </HBox>
-    </bottom>
+<Pane 
 
-</BorderPane>
+    xmlns="http://javafx.com/javafx/8" 
+
+    xmlns:fx="http://javafx.com/fxml/1" 
+
+    fx:controller="applicationcrud.ui.MovementController" 
+
+    prefWidth="900" 
+
+    prefHeight="600"> 
+
+  
+
+    <!-- ID --> 
+
+    <Label text="ID:" layoutX="20" layoutY="20"/> 
+
+    <TextField fx:id="txtId" layoutX="60" layoutY="16" prefWidth="120"/> 
+
+  
+
+    <!-- Date filters --> 
+
+    <Label text="From:" layoutX="200" layoutY="20"/> 
+
+    <DatePicker fx:id="dpFromDate" layoutX="250" layoutY="16"/> 
+
+  
+
+    <Label text="To:" layoutX="420" layoutY="20"/> 
+
+    <DatePicker fx:id="dpToDate" layoutX="460" layoutY="16"/> 
+
+  
+
+    <!-- Search button --> 
+
+    <Button fx:id="btnSearch" 
+
+            text="Search" 
+
+            layoutX="640" 
+
+            layoutY="16" 
+
+            onAction="#handleSearch"/> 
+
+  
+
+    <!-- Info label --> 
+
+    <Label fx:id="lblInfo" layoutX="20" layoutY="55"/> 
+
+  
+
+    <!-- Table --> 
+
+    <TableView fx:id="tblMovements" 
+
+               layoutX="20" 
+
+               layoutY="80" 
+
+               prefWidth="860" 
+
+               prefHeight="420"> 
+
+  
+
+        <columns> 
+
+            <TableColumn fx:id="colDate" text="Date" prefWidth="150"/> 
+
+            <TableColumn fx:id="colDescription" text="Description" prefWidth="300"/> 
+
+            <TableColumn fx:id="colAmount" text="Amount" prefWidth="150"/> 
+
+            <TableColumn fx:id="colBalance" text="Balance" prefWidth="150"/> 
+
+        </columns> 
+
+    </TableView> 
+
+  
+
+    <!-- Bottom buttons --> 
+
+    <Button fx:id="btnCreate" 
+
+            text="New Movement" 
+
+            layoutX="600" 
+
+            layoutY="520" 
+
+            onAction="#handleCreate"/> 
+
+  
+
+    <Button fx:id="btnDelete" 
+
+            text="Delete Last" 
+
+            layoutX="740" 
+
+            layoutY="520" 
+
+            disable="true" 
+
+            onAction="#handleDelete"/> 
+
+  
+
+</Pane> 
+
+ 
