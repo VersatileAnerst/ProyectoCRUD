@@ -89,16 +89,13 @@ public class AccountsController {
             colBeginBalance.setCellValueFactory(new PropertyValueFactory<>("beginBalance"));
             colType.setCellValueFactory(new PropertyValueFactory<>("type"));
             colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-            //asociar eventos a manejadores
-            //btMovement.setOnAction(this::handleBtMovementOnAction);
-            //Listener
+            
+            //Seleccion en Tabla
             tblAccounts.getSelectionModel().selectedItemProperty()
                     .addListener(this::handleAccountsTableSelectionChanged);
-            
+            //Asociar Eventos A Manejadores
             btMovement.setOnAction(this::handleBtMovementOnAction);
-            
-            //Establecer el botón de Exit como cancelButton. 
-            btExit.setCancelButton(true);
+            btExit.setOnAction(this::handleBtExitOnAction);
             // Botones deshabilitados
             btUpdate.setDisable(true);
             btDelete.setDisable(true);
@@ -120,10 +117,19 @@ public class AccountsController {
      * @param customer 
      */
     public void setCustomer(Customer customer) {
+        try{
         this.customer = customer;
         //Carga de datos a las columnas
             tblAccounts.setItems(FXCollections.observableArrayList(
             client.findAccountsByCustomerId_XML(new GenericType<List<Account>>() {}, customer.getId().toString())));
+            LOGGER.info("Table Accounts Uploaded");
+        }catch(Exception e){
+            Alert alert=new Alert(Alert.AlertType.ERROR,
+                            "No se ha podido cargar los datos:"+
+                             e.getMessage(),
+                             ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -137,13 +143,17 @@ public class AccountsController {
                                                      Object newValue) {
 
         if (newValue != null) {
+            
             btUpdate.setDisable(false);
             btDelete.setDisable(false);
             btMovement.setDisable(false);
         }
     }
-    
-    private void handleBtExitOnAction(){
+    /**
+     * Este metodo maneja la accion del boton exit
+     * @param event 
+     */
+    private void handleBtExitOnAction(ActionEvent event){
         try{
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, 
                 "Are you sure you want to Sign Out", 
@@ -164,7 +174,12 @@ public class AccountsController {
     
     private void handleBtPostOnAction(){
         try{
-            
+        tblAccounts.refresh();
+        LOGGER.info("Table Account Updated");
+        }catch (InternalServerErrorException se) {//Captura los errores 500
+            LOGGER.warning(se.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "Internal server error").showAndWait();    
         }catch(Exception e){
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
@@ -173,9 +188,15 @@ public class AccountsController {
         }
         
     }
-    private void handleBtUpdateOnAction(){
+    @FXML
+    private void handleBtUpdateOnAction(ActionEvent event){
         try{
-            
+            tblAccounts.refresh();
+            LOGGER.info("Table Account Updated");
+        }catch (InternalServerErrorException se) {//Captura los errores 500
+            LOGGER.warning(se.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "Internal server error").showAndWait();   
         }catch(Exception e){
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
@@ -183,10 +204,22 @@ public class AccountsController {
                     .showAndWait();
         }
     }
-    private void handleBtDeleteOnAction(){
+    /**
+     * Este metodo maneja la accion del Boton Delete
+     * @param event 
+     */
+    @FXML
+    private void handleBtDeleteOnAction(ActionEvent event){
         try{
-            
-            
+        //Guarda la cuenta seleccionada en una variable
+        Account selectedAccount =
+                tblAccounts.getSelectionModel().getSelectedItem();
+        //Elimina ola cuenta seleccionada
+        tblAccounts.getItems().remove(selectedAccount);
+        LOGGER.info("Account Removed");
+        //Refresca la tabla
+        tblAccounts.refresh();
+        LOGGER.info("Table Account Updated");
         }catch(Exception e){
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
@@ -197,18 +230,21 @@ public class AccountsController {
     @FXML
     private void handleBtMovementOnAction(ActionEvent event){
         try{
+        //Selecciona una cuenta y la guarda en una variable
         Account selectedAccount =
                 tblAccounts.getSelectionModel().getSelectedItem();
         
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Movement.fxml"));
         Parent root = (Parent)loader.load();
         MovementController controller =loader.getController();
+        //Crea nueva ventana
         Stage movementStage = new Stage(); 
         
         controller.init(movementStage, root);
+        //le pasa la cuenta seleccionada al controlador de Movement
         controller.setAccount(selectedAccount);
         movementStage.show();
-        
+        LOGGER.info("Movement Windonw initialized");
         }catch (InternalServerErrorException se) {//Captura los errores 500
             LOGGER.warning(se.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,

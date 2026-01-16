@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+  
+
+<?import javafx.scene.control.*?> 
+
+<?import javafx.scene.layout.*?> 
+
+  
+
+<Pane 
+
+    xmlns="http://javafx.com/javafx/8" 
+
+    xmlns:fx="http://javafx.com/fxml/1" 
+
+    fx:controller="applicationcrud.ui.MovementController" 
+
+    prefWidth="900" 
+
+    prefHeight="600"> 
+
+  
+
+    <!-- ID --> 
+
+    <Label text="ID:" layoutX="20" layoutY="20"/> 
+
+    <TextField fx:id="txtId" layoutX="60" layoutY="16" prefWidth="120"/> 
+
+  
+
+    <!-- Date filters --> 
+
+    <Label text="From:" layoutX="200" layoutY="20"/> 
+
+    <DatePicker fx:id="dpFromDate" layoutX="250" layoutY="16"/> 
+
+  
+
+    <Label text="To:" layoutX="420" layoutY="20"/> 
+
+    <DatePicker fx:id="dpToDate" layoutX="460" layoutY="16"/> 
+
+  
+
+    <!-- Search button --> 
+
+    <Button fx:id="btnSearch" 
+
+            text="Search" 
+
+            layoutX="640" 
+
+            layoutY="16" 
+
+            onAction="#handleSearch"/> 
+
+  
+
+    <!-- Info label --> 
+
+    <Label fx:id="lblInfo" layoutX="20" layoutY="55"/> 
+
+  
+
+    <!-- Table --> 
+
+    <TableView fx:id="tblMovements" 
+
+               layoutX="20" 
+
+               layoutY="80" 
+
+               prefWidth="860" 
+
+               prefHeight="420"> 
+
+  
+
+        <columns> 
+
+            <TableColumn fx:id="colDate" text="Date" prefWidth="150"/> 
+
+            <TableColumn fx:id="colDescription" text="Description" prefWidth="300"/> 
+
+            <TableColumn fx:id="colAmount" text="Amount" prefWidth="150"/> 
+
+            <TableColumn fx:id="colBalance" text="Balance" prefWidth="150"/> 
+
+        </columns> 
+
+    </TableView> 
+
+  
+
+    <!-- Bottom buttons --> 
+
+    <Button fx:id="btnCreate" 
+
+            text="New Movement" 
+
+            layoutX="600" 
+
+            layoutY="520" 
+
+            onAction="#handleCreate"/> 
+
+  
+
+    <Button fx:id="btnDelete" 
+
+            text="Delete Last" 
+
+            layoutX="740" 
+
+            layoutY="520" 
+
+            disable="true" 
+
+            onAction="#handleDelete"/> 
+
+  
+
+</Pane> 
+
+ 
