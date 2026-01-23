@@ -11,6 +11,7 @@ import applicationcrud.model.AccountType;
 import applicationcrud.model.Customer;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -107,28 +108,36 @@ public class AccountsController {
             //CreditLine
             colCreditLine.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
             colCreditLine.setOnEditCommit(
-                    (CellEditEvent<Account, Double> t) -> {
-                        t.getRowValue().setCreditLine(t.getNewValue());
+                (CellEditEvent<Account, Double> t) -> {
+                    Account account = t.getRowValue();
+                    if (account.getType() == AccountType.CREDIT) {
+                        account.setCreditLine(t.getNewValue());
+                        lbMessage.setText("");
+                    }else{
+                        t.getTableView().refresh();
+                        LOGGER.info("Table Updated");
+                        lbMessage.setText("Only Credit Accounts can edit CreditLine");
+                        }
                     });
             //Tipo de cuenta
             colType.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<AccountType>() {
                 @Override
                 public String toString(AccountType type) {
-                    return type == null ? "" : type.name();
-                }
+                return type == null ? "" : type.name();
+                    }
 
                 @Override
                 public AccountType fromString(String string) {
                     return AccountType.valueOf(string);
-                }
-            }, AccountType.values()));
+                 }
+                }, AccountType.values()));
             colType.setOnEditCommit(
-                    (CellEditEvent< Account, AccountType> t) -> {
-                        t.getRowValue().setType(t.getNewValue());
-                    });
+                (CellEditEvent<Account, AccountType> t) -> {
+                t.getRowValue().setType(t.getNewValue());
+                });
             //Seleccion en Tabla
             tblAccounts.getSelectionModel().selectedItemProperty()
-                    .addListener(this::handleAccountsTableSelectionChanged);
+                        .addListener(this::handleAccountsTableSelectionChanged);
             //Asociar Eventos A Manejadores
             btPost.setOnAction(this::handleBtPostOnAction);
             btUpdate.setOnAction(this::handleBtUpdateOnAction);
@@ -143,20 +152,19 @@ public class AccountsController {
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Account window initialized");
-        } catch (Exception e) {
+                    } catch (Exception e) {
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
                     "Error Opening Window: " + e.getLocalizedMessage())
                     .showAndWait();
         }
-    }
-
-    /**
-     * Este metodo establece el customer del signIn y carga los datos de las
-     * cuentas
-     *
-     * @param customer
-     */
+        }
+        /**
+         * Este metodo establece el customer del signIn y carga los datos de las
+         * cuentas
+         *
+         * @param customer
+         */
     public void setCustomer(Customer customer) {
         try {
             this.customer = customer;
@@ -218,14 +226,25 @@ public class AccountsController {
                     .showAndWait();
         }
     }
-
+    /**
+     * Maneja la accion del boton Post
+     * @param event 
+     */
     @FXML
     private void handleBtPostOnAction(ActionEvent event) {
         try {
             Account newAccount = new Account();
+            Random id = new Random();
+            //Genera ID aleatorio de 10 cifras
+            long random = (long)(Math.random() * 900000000L)+ 1000000000L;
+            newAccount.setId(random);
+            //Valores por defecto
             newAccount.setBalance(0.0);
-            newAccount.setBeginBalance(0.0);
+            newAccount.setBeginBalance(newAccount.getBalance());
             newAccount.setBeginBalanceTimestamp(new Date());
+            newAccount.setType(AccountType.STANDARD);
+            newAccount.setCreditLine(0.0);
+            newAccount.setDescription("");
             tblAccounts.getItems().add(newAccount);
             tblAccounts.getSelectionModel().select(newAccount);
             //Funcion del RESTClient Crea la cuenta
@@ -244,7 +263,10 @@ public class AccountsController {
         }
 
     }
-
+    /**
+     * Maneja la accion del boton Update
+     * @param event 
+     */
     @FXML
     private void handleBtUpdateOnAction(ActionEvent event) {
         try {
