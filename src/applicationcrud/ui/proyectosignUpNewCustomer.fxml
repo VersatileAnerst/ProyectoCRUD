@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+fx:controller="applicationcrud.ui.Sign_UpController">
+   <children>
+      <TextField fx:id="tfFirstName" layoutX="224.0" layoutY="163.0" prefHeight="25.0" prefWidth="239.0" promptText="Donal">
+         <tooltip>
+            <Tooltip text="Donald" />
+         </tooltip></TextField>
+      <TextField fx:id="tfLastName" layoutX="580.0" layoutY="163.0" prefHeight="25.0" prefWidth="245.0" promptText="Jhonson">
+         <tooltip>
+            <Tooltip text="Jhonson" />
+         </tooltip></TextField>
+      <TextField fx:id="tfMiddlelnitial" layoutX="224.0" layoutY="223.0" prefHeight="25.0" prefWidth="239.0" promptText="C.">
+         <tooltip>
+            <Tooltip text="C." />
+         </tooltip></TextField>
+      <TextField fx:id="tfPhone" layoutX="580.0" layoutY="223.0" prefHeight="25.0" prefWidth="245.0" promptText="51-555-5555">
+         <tooltip>
+            <Tooltip text="51-555-5555" />
+         </tooltip></TextField>
+      <Label fx:id="LbFirstName" layoutX="115.0" layoutY="168.0" text="First Name :" />
+      <Label fx:id="LbLastName" layoutX="486.0" layoutY="168.0" text="Last Name :" />
+      <Label fx:id="LbMiddlelntial" layoutX="103.0" layoutY="228.0" prefHeight="15.0" prefWidth="88.0" text="Middlelnitial :" />
+      <Label fx:id="LbEmail" layoutX="319.0" layoutY="296.0" text="Email :" />
+      <Label fx:id="LbPassword" layoutX="306.0" layoutY="343.0" text="Password :" />
+      <Label fx:id="LbConfirmPassword" layoutX="264.0" layoutY="395.0" text="Confirm Password:" />
+      <Label fx:id="LbPhone" layoutX="496.0" layoutY="228.0" text="Phone:" />
+      <Label fx:id="LbCity" layoutX="164.0" layoutY="465.0" text="City:" />
+      <Label fx:id="LbState" layoutX="536.0" layoutY="465.0" text="State:" />
+      <Label fx:id="LbStreet" layoutX="155.0" layoutY="510.0" text="Street :" />
+      <Label fx:id="LbZip" layoutX="538.0" layoutY="510.0" text="Zip:" />
+      <Label layoutX="382.0" layoutY="64.0" prefHeight="45.0" prefWidth="214.0" text="        NEW CUSTOMER" />
+      <TextField fx:id="tfEmail" layoutX="391.0" layoutY="291.0" prefHeight="25.0" prefWidth="320.0" promptText="username@example.com">
+         <tooltip>
+            <Tooltip text="username@example.com" />
+         </tooltip></TextField>
+      <PasswordField fx:id="pfPassword" layoutX="391.0" layoutY="338.0" promptText="xxxxxxxx">
+         <tooltip>
+            <Tooltip text="8-10 caracter " textAlignment="CENTER" />
+         </tooltip></PasswordField>
+      <PasswordField fx:id="pfConfirmPassword" layoutX="391.0" layoutY="383.0" promptText="xxxxxxxxx">
+         <tooltip>
+            <Tooltip text="8-10 caracter " />
+         </tooltip></PasswordField>
+      <TextField fx:id="tfCity" layoutX="221.0" layoutY="460.0" promptText="City">
+         <tooltip>
+            <Tooltip text="New York" />
+         </tooltip></TextField>
+      <TextField fx:id="tfState" layoutX="602.0" layoutY="460.0" promptText="State">
+         <tooltip>
+            <Tooltip text="New York" />
+         </tooltip></TextField>
+      <TextField fx:id="tfStreet" layoutX="221.0" layoutY="505.0" promptText="Street">
+         <tooltip>
+            <Tooltip text="200 West 45th Street. 200" />
+         </tooltip></TextField>
+      <TextField fx:id="tfZip" layoutX="602.0" layoutY="505.0" promptText="Q12345">
+         <tooltip>
+            <Tooltip text="Q12345" />
+         </tooltip></TextField>
+      <Button fx:id="btSignUp" layoutX="626.0" layoutY="597.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="180.0" text="Sign Up" />
+      <Button fx:id="btBack" layoutX="501.0" layoutY="597.0" mnemonicParsing="false" text="Back" />
+      <Hyperlink fx:id="hySignIn" layoutX="319.0" layoutY="598.0" text="Sign In" />
+   </children>
+</Pane>

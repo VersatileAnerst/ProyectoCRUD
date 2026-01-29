@@ -198,7 +198,23 @@ public class Sign_InController {
                  .showAndWait();
         }
     }
-    
+    /**
+     * Este metodo maneja la accion del enlace SignUp 
+     * @param event 
+     */
+    private void handleHySignUpOnAction(ActionEvent event){
+       try{
+       FXMLLoader loader= new FXMLLoader(getClass().getResource("proyectosignUpNewCustomer.fxml"));
+        Parent root = (Parent)loader.load();
+        Sign_UpController controller =loader.getController();
+        controller.init(stage, root);
+       }catch (Exception e){
+           LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "HyperLink error: " + e.getLocalizedMessage())
+                 .showAndWait(); 
+       }  
+    }
     /**
      * Este metodo maneja la accion del Boton Sign In
      * @param event 

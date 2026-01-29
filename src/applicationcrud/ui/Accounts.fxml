@@ -7,21 +7,21 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
    <children>
-      <TableView fx:id="tblAccounts" layoutX="76.0" layoutY="59.0">
+      <TableView fx:id="tblAccounts" layoutX="20.0" layoutY="58.0" prefHeight="550.0" prefWidth="887.0">
         <columns>
-          <TableColumn fx:id="colId" prefWidth="110.0" text="ID" />
-          <TableColumn fx:id="colDescription" prefWidth="140.0" text="Description" />
-          <TableColumn fx:id="colType" prefWidth="101.0" text="Type" />
-          <TableColumn fx:id="colCreditLine" prefWidth="99.0" text="CreditLine" />
-          <TableColumn fx:id="colBeginBalance" prefWidth="120.0" text="BeginBalance" />
-          <TableColumn fx:id="colBalance" prefWidth="70.0" text="Balance" />
-          <TableColumn fx:id="colDate" prefWidth="85.0" text="Date" />
+          <TableColumn fx:id="colId" prefWidth="92.0" resizable="false" text="ID" />
+          <TableColumn fx:id="colDescription" prefWidth="213.0" resizable="false" text="Description" />
+          <TableColumn fx:id="colType" minWidth="0.0" prefWidth="91.0" resizable="false" text="Type" />
+          <TableColumn fx:id="colCreditLine" prefWidth="88.0" resizable="false" text="CreditLine" />
+          <TableColumn fx:id="colBeginBalance" prefWidth="118.0" resizable="false" text="BeginBalance" />
+          <TableColumn fx:id="colBalance" prefWidth="73.0" resizable="false" text="Balance" />
+          <TableColumn fx:id="colDate" prefWidth="211.0" resizable="false" text="Date" />
         </columns>
          <tooltip>
             <Tooltip text="Account's Table" />
          </tooltip>
       </TableView>
-      <Button fx:id="btExit" defaultButton="true" layoutX="44.0" layoutY="497.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Exit">
+      <Button fx:id="btExit" defaultButton="true" layoutX="20.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Exit">
          <tooltip>
             <Tooltip text="Sign Out" />
          </tooltip>
@@ -29,27 +29,32 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <Button fx:id="btPost" disable="true" layoutX="883.0" layoutY="143.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Post">
+      <Button fx:id="btPost" disable="true" layoutX="922.0" layoutY="136.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Post">
          <tooltip>
             <Tooltip text="Create a new account" />
          </tooltip>
       </Button>      
-      <Button fx:id="btUpdate" disable="true" layoutX="883.0" layoutY="243.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Update">
+      <Button fx:id="btUpdate" disable="true" layoutX="922.0" layoutY="302.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Update">
          <tooltip>
             <Tooltip text="Update account" />
          </tooltip>
       </Button>
 
-      <Button fx:id="btDelete" disable="true" layoutX="883.0" layoutY="335.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete">
+      <Button fx:id="btDelete" disable="true" layoutX="922.0" layoutY="453.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete">
          <tooltip>
             <Tooltip text="Delete account" />
          </tooltip>
       </Button>
-      <Button fx:id="btMovement" layoutX="741.0" layoutY="489.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Movements">
+      <Button fx:id="btMovement" layoutX="775.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Movements">
          <tooltip>
             <Tooltip text="Check Account Movements" />
          </tooltip>
       </Button>
-      <Label id="lbMessage" layoutX="76.0" layoutY="468.0" prefHeight="21.0" prefWidth="666.0" />
+      <Label fx:id="lbMessage" layoutX="20.0" layoutY="608.0" prefHeight="25.0" prefWidth="887.0" text="" />
+      <Text layoutX="20.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account" wrappingWidth="573.7294921875">
+         <font>
+            <Font name="Caliban" size="26.0" />
+         </font>
+      </Text>
    </children>
 </Pane>
