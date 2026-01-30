@@ -371,14 +371,15 @@ public class AccountsController {
                 return;
             }
             //Elimina la cuenta seleccionada si no tiene ningun movimiento
-            if (selectedAccount.getMovements()== null) {
+            if (selectedAccount.getMovements() != null || selectedAccount.getMovements().isEmpty()) {
+                lbMessage.setText("The account selected has movements");
+            } else {
                 //Llama a una funcion del AccountRestClient
                 client.removeAccount(selectedAccount.getId().toString());
                 //Borro la fila de la tabla
                 tblAccounts.getItems().remove(selectedAccount);
                 
                 LOGGER.info("Account Deleted");
-            } else {
             }
         } catch (ClientErrorException e) {
             LOGGER.warning(e.getLocalizedMessage());

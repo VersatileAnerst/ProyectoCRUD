@@ -4,19 +4,19 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<HBox id="menuBar" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
+<HBox fx:id="menuBar" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
    <children>
       <MenuBar prefHeight="29.0" prefWidth="750.0">
         <menus>
-          <Menu id="menuAction" mnemonicParsing="false" text="Operations">
+          <Menu fx:id="menuAction" mnemonicParsing="false" text="Operations">
             <items>
-              <MenuItem mnemonicParsing="false" text="Logout" />
+              <MenuItem fx:id="menuItemLogout" mnemonicParsing="false" text="Logout" />
             </items>
           </Menu>
-          <Menu id="menuHelp" mnemonicParsing="false" text="Help">
+          <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Accounts help" />
-                  <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" text="Accounts help" />
+                  <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" text="About" />
             </items>
           </Menu>
         </menus>
