@@ -183,7 +183,6 @@ public class AccountsController {
             Object newValue) {
 
         if (newValue != null) {
-            btPost.setDisable(false);
             btUpdate.setDisable(false);
             btDelete.setDisable(false);
             btMovement.setDisable(false);
@@ -222,7 +221,7 @@ public class AccountsController {
     private void handleBeginBalance(CellEditEvent<Account, Double> event) {
         Account account = event.getRowValue();
         Double newBeginBalance = event.getNewValue();
-        if (account.getBeginBalance() != 0.0 || account.getBeginBalance() != null ){
+        if (account.getBeginBalance() != 0.0 && account.getBeginBalance() != null ){
             event.getTableView().refresh();
             lbMessage.setText("Begin Balance is not editable");
             return;
@@ -371,14 +370,15 @@ public class AccountsController {
                 return;
             }
             //Elimina la cuenta seleccionada si no tiene ningun movimiento
-            if (selectedAccount.getMovements() != null || selectedAccount.getMovements().isEmpty()) {
+            if (selectedAccount.getMovements() != null && selectedAccount.getMovements().isEmpty()) {
                 lbMessage.setText("The account selected has movements");
             } else {
                 //Llama a una funcion del AccountRestClient
                 client.removeAccount(selectedAccount.getId().toString());
                 //Borro la fila de la tabla
                 tblAccounts.getItems().remove(selectedAccount);
-                
+                tblAccounts.refresh();
+
                 LOGGER.info("Account Deleted");
             }
         } catch (ClientErrorException e) {
