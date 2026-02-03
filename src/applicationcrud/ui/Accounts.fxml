@@ -21,7 +21,7 @@
             <Tooltip text="Account's Table" />
          </tooltip>
       </TableView>
-      <Button fx:id="btExit" defaultButton="true" layoutX="20.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Exit">
+      <Button fx:id="btExit" defaultButton="true" layoutX="20.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Exit" textFill="#d70c0c">
          <tooltip>
             <Tooltip text="Sign Out" />
          </tooltip>
@@ -40,12 +40,12 @@
          </tooltip>
       </Button>
 
-      <Button fx:id="btDelete" disable="true" layoutX="922.0" layoutY="453.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete">
+      <Button fx:id="btDelete" disable="true" layoutX="922.0" layoutY="453.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete" textFill="#bc0f0f">
          <tooltip>
             <Tooltip text="Delete account" />
          </tooltip>
       </Button>
-      <Button fx:id="btMovement" layoutX="775.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Movements">
+      <Button fx:id="btMovement" layoutX="775.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Movements" textFill="#10da10">
          <tooltip>
             <Tooltip text="Check Account Movements" />
          </tooltip>
