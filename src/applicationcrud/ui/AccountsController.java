@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -74,6 +75,12 @@ public class AccountsController {
     private Button btDelete;
     @FXML
     private Button btMovement;
+    @FXML
+    private MenuItem menuItemLogout;
+    @FXML
+    private MenuItem menuItemHelp;
+    @FXML
+    private MenuItem menuItemAbout;
 
     private Stage stage;
 
@@ -118,42 +125,45 @@ public class AccountsController {
             colType.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<AccountType>() {
                 @Override
                 public String toString(AccountType type) {
-                return type == null ? "" : type.name();
-                    }
+                    return type == null ? "" : type.name();
+                }
 
                 @Override
                 public AccountType fromString(String string) {
                     return AccountType.valueOf(string);
-                 }
-                }, AccountType.values()));
+                }
+            }, AccountType.values()));
             colType.setOnEditCommit(this::handleTypeEdit);
             //Seleccion en Tabla
             tblAccounts.getSelectionModel().selectedItemProperty()
-                        .addListener(this::handleAccountsTableSelectionChanged);
+                    .addListener(this::handleAccountsTableSelectionChanged);
             //Asociar Eventos A Manejadores
             btPost.setOnAction(this::handleBtPostOnAction);
             btUpdate.setOnAction(this::handleBtUpdateOnAction);
             btDelete.setOnAction(this::handleBtDeleteOnAction);
             btMovement.setOnAction(this::handleBtMovementOnAction);
             btExit.setOnAction(this::handleBtExitOnAction);
-            
-            
+            menuItemLogout.setOnAction(this::handleLogout);
+            menuItemHelp.setOnAction(this::handleHelp);
+            menuItemAbout.setOnAction(this::handleAbout);
+
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Account window initialized");
-                    } catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
                     "Error Opening Window: " + e.getLocalizedMessage())
                     .showAndWait();
         }
-        }
+    }
+
     /**
-    * Este metodo establece el customer del signIn y carga los datos de las
-    * cuentas
-    *
-    * @param customer
-    */
+     * Este metodo establece el customer del signIn y carga los datos de las
+     * cuentas
+     *
+     * @param customer
+     */
     public void setCustomer(Customer customer) {
         try {
             this.customer = customer;
@@ -188,11 +198,13 @@ public class AccountsController {
             btMovement.setDisable(false);
         }
     }
+
     /**
      * Metodo que maneja la accion de la celda Description
-     * @param event 
+     *
+     * @param event
      */
-    private void handleDescriptionEdit(CellEditEvent<Account, String> event){
+    private void handleDescriptionEdit(CellEditEvent<Account, String> event) {
         Account account = event.getRowValue();
         //Para la descripcion
         account.setDescription(event.getNewValue());
@@ -200,9 +212,11 @@ public class AccountsController {
         client.updateAccount_XML(account);
         LOGGER.info("Description Updated");
     }
+
     /**
      * Metodo que maneja la edicion de celda de Credit line
-     * @param event 
+     *
+     * @param event
      */
     private void handleCreditLineEdit(CellEditEvent<Account, Double> event) {
         Account account = event.getRowValue();
@@ -220,14 +234,17 @@ public class AccountsController {
             lbMessage.setText("Only Credit Accounts can edit CreditLine");
         }
     }
+
     /**
-     * Metodo que maneja la edicion de la celda begin balance solo al crear nueva cuenta
-     * @param event 
+     * Metodo que maneja la edicion de la celda begin balance solo al crear
+     * nueva cuenta
+     *
+     * @param event
      */
     private void handleBeginBalance(CellEditEvent<Account, Double> event) {
         Account account = event.getRowValue();
         Double newBeginBalance = event.getNewValue();
-        if (account.getBeginBalance() != null){
+        if (account.getBeginBalance() != null) {
             event.getTableView().refresh();
             lbMessage.setText("Begin Balance is not editable");
             return;
@@ -240,24 +257,27 @@ public class AccountsController {
         // Establece el beginBalance y sincroniza el balance actual
         account.setBeginBalance(newBeginBalance);
         account.setBalance(newBeginBalance);
-        
+
         client.updateAccount_XML(account);
 
         LOGGER.info("BeginBalance established");
     }
+
     /**
      * Metodo que maneja la edicion de celda de AccountType
-     * @param event 
+     *
+     * @param event
      */
     private void handleTypeEdit(CellEditEvent<Account, AccountType> event) {
         Account account = event.getRowValue();
         account.setType(event.getNewValue());
-        
+
         //Lo guarda en la base de datos
         client.updateAccount_XML(account);
 
         LOGGER.info("Account Type Updated");
     }
+
     /**
      * Este metodo maneja la accion del boton exit
      *
@@ -283,9 +303,11 @@ public class AccountsController {
                     .showAndWait();
         }
     }
+
     /**
      * Maneja la accion del boton Post
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void handleBtPostOnAction(ActionEvent event) {
@@ -293,7 +315,7 @@ public class AccountsController {
             Account newAccount = new Account();
             Random id = new Random();
             //Genera ID aleatorio de 10 cifras
-            long random = (long)(Math.random() * 900000000L)+ 1000000000L;
+            long random = (long) (Math.random() * 900000000L) + 1000000000L;
             newAccount.setId(random);
             //Valores por defecto
             newAccount.setBeginBalanceTimestamp(new Date());
@@ -323,9 +345,35 @@ public class AccountsController {
         }
 
     }
+
+    private void handleLogout(ActionEvent event) {
+        Stage stage = (Stage) btExit.getScene().getWindow();
+        stage.close();
+        LOGGER.info("Logout clicked");
+    }
+
+    private void handleHelp(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Help");
+        alert.setHeaderText("Accounts Help");
+        alert.setContentText("Aquí puedes consultar tus cuentas, hacer movimientos, actualizar o borrar.");
+        alert.showAndWait();
+        LOGGER.info("Help clicked");
+    }
+
+    private void handleAbout(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("About BankApp");
+        alert.setContentText("BankApp v1.0\nAuthor: Jimmy y Daniel");
+        alert.showAndWait();
+        LOGGER.info("About clicked");
+    }
+
     /**
      * Maneja la accion del boton Update
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void handleBtUpdateOnAction(ActionEvent event) {
