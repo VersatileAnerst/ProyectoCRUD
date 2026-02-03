@@ -194,7 +194,10 @@ public class AccountsController {
      */
     private void handleDescriptionEdit(CellEditEvent<Account, String> event){
         Account account = event.getRowValue();
+        //Para la descripcion
         account.setDescription(event.getNewValue());
+        //Guarda la descripcion en la base de datos
+        client.updateAccount_XML(account);
         LOGGER.info("Description Updated");
     }
     /**
@@ -205,7 +208,10 @@ public class AccountsController {
         Account account = event.getRowValue();
         //Si el type es Credit se puede editar 
         if (account.getType() == AccountType.CREDIT) {
+            //Actualiza en la tabla
             account.setCreditLine(event.getNewValue());
+            //Actualiza en la base de atos
+            client.updateAccount_XML(account);
             lbMessage.setText("");
         } else {
             //Si no es type Credit la tabla se refresca y muestra un mensaje
@@ -221,7 +227,7 @@ public class AccountsController {
     private void handleBeginBalance(CellEditEvent<Account, Double> event) {
         Account account = event.getRowValue();
         Double newBeginBalance = event.getNewValue();
-        if (account.getBeginBalance() != 0.0 && account.getBeginBalance() != null ){
+        if (account.getBeginBalance() != null){
             event.getTableView().refresh();
             lbMessage.setText("Begin Balance is not editable");
             return;
@@ -234,6 +240,8 @@ public class AccountsController {
         // Establece el beginBalance y sincroniza el balance actual
         account.setBeginBalance(newBeginBalance);
         account.setBalance(newBeginBalance);
+        
+        client.updateAccount_XML(account);
 
         LOGGER.info("BeginBalance established");
     }
@@ -244,6 +252,10 @@ public class AccountsController {
     private void handleTypeEdit(CellEditEvent<Account, AccountType> event) {
         Account account = event.getRowValue();
         account.setType(event.getNewValue());
+        
+        //Lo guarda en la base de datos
+        client.updateAccount_XML(account);
+
         LOGGER.info("Account Type Updated");
     }
     /**
