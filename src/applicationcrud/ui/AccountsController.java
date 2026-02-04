@@ -33,6 +33,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -146,6 +149,14 @@ public class AccountsController {
             menuItemLogout.setOnAction(this::handleLogout);
             menuItemHelp.setOnAction(this::handleHelp);
             menuItemAbout.setOnAction(this::handleAbout);
+
+            //Accelerators del menu
+            menuItemLogout.setAccelerator(
+                    new KeyCodeCombination(KeyCode.ESCAPE, KeyCombination.CONTROL_DOWN));//Control + Escape  LogOut
+
+            // F1 para Help
+            menuItemHelp.setAccelerator(
+                    new KeyCodeCombination(KeyCode.F1));//F1 abre Help
 
             //Mostrar la ventana
             stage.show();
@@ -430,8 +441,10 @@ public class AccountsController {
                 return;
             }
             //Elimina la cuenta seleccionada si no tiene ningun movimiento
-            if (selectedAccount.getMovements() != null && selectedAccount.getMovements().isEmpty()) {
-                lbMessage.setText("The account selected has movements");
+            if (selectedAccount.getMovements() != null && !selectedAccount.getMovements().isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, 
+                        "This account has movements and cannot be deleted",
+                        ButtonType.OK).showAndWait();
             } else {
                 //Llama a una funcion del AccountRestClient
                 client.removeAccount(selectedAccount.getId().toString());
