@@ -5,6 +5,7 @@
  */
 package applicationcrud.logic;
 
+import applicationcrud.model.Movement;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -80,6 +81,10 @@ public class MovementRESTClient {
 
     public void close() {
         client.close();
+    }
+
+    public void create_XML(Movement movement) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

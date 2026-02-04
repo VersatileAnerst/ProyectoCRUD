@@ -6,6 +6,7 @@
 package applicationcrud.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -21,6 +22,10 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Movement implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static void remove(String toString) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     /**
      * Identification field for Movement. 
      */
@@ -183,5 +188,20 @@ public class Movement implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setDate(LocalDate value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    /**/
+    private Long accountId;
+
+    public Long getAccountId() {
+    return accountId;
+     }
+
+    public void setAccountId(Long accountId) {
+    this.accountId = accountId;
+    }
+
     
 }

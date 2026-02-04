@@ -253,4 +253,8 @@ public class Sign_InController {
                  "Sign In error").showAndWait();
         }
     }    
+
+    public void initStage(Stage stage, Parent root) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
