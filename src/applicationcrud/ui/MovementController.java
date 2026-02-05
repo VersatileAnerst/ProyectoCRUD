@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,6 +29,7 @@ public class MovementController {
     @FXML private TableColumn<Movement, Double> colBalance;
     @FXML private Button btnDelete;
     @FXML private Label lblInfo;
+    @FXML private Button btnCreate;
 
     private Account account;
     private final MovementRESTClient client = new MovementRESTClient();
@@ -46,6 +46,11 @@ public class MovementController {
             // Configuración de la tabla
             configureTableColumns();
             configureTableSelection();
+            
+            //Asociar Eventos A Manejadores
+            //Estan en el fxml
+            //btnDelete.setOnAction(this::handleDelete);
+            
 
             stage.show();
             LOGGER.info("Movement window initialized");
@@ -76,22 +81,28 @@ public class MovementController {
     }
 
     public void loadMovements() {
-        if (account == null) return;
-        try {
-            GenericType<List<Movement>> gt = new GenericType<List<Movement>>() {};
-            List<Movement> movements = client.findMovementByAccount_XML(gt, account.getId().toString());
+    if (account == null) return;
+    try {
+        LOGGER.info("Loading movements for account: " + account.getId());
+        GenericType<List<Movement>> gt = new GenericType<List<Movement>>() {};
+        List<Movement> movements = client.findMovementByAccount_XML(gt, account.getId().toString());
 
-            ObservableList<Movement> data = FXCollections.observableArrayList(movements);
-            // Ordenar por fecha
-            data.sort((m1, m2) -> m1.getTimestamp().compareTo(m2.getTimestamp()));
+        ObservableList<Movement> data = FXCollections.observableArrayList(movements);
+        
+        // Ordenar por fecha (más reciente arriba suele ser mejor)
+        data.sort((m1, m2) -> m2.getTimestamp().compareTo(m1.getTimestamp()));
 
-            tblMovements.setItems(data);
-            lblInfo.setText("Account: " + account.getId() + " - " + data.size() + " movements found.");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error loading movements", e);
-            showError("Could not load movements from server.");
-        }
+        // Actualizar UI
+        tblMovements.setItems(null); // Limpiamos la referencia antigua
+        tblMovements.setItems(data); // Inyectamos la lista nueva
+        tblMovements.refresh();      // Forzamos el renderizado de celdas
+        
+        lblInfo.setText("Account: " + account.getId() + " - " + data.size() + " movements found.");
+    } catch (Exception e) {
+        LOGGER.log(Level.SEVERE, "Error loading movements", e);
+        showError("Could not load movements from server. Check connection.");
     }
+}
 
     @FXML
     private void handleCreate() {
@@ -129,7 +140,8 @@ public class MovementController {
         Movement selected = tblMovements.getSelectionModel().getSelectedItem();
         if (selected != null) {
             // Lógica de borrado (ajustar según tu API)
-            // client.remove(selected.getId().toString());
+            String seleccion = selected.getId().toString();
+            client.remove(seleccion);
             loadMovements();
             LOGGER.info("Movement deleted.");
         }

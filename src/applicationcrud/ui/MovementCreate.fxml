@@ -38,9 +38,9 @@
 
     <HBox spacing="10" alignment="CENTER_RIGHT"> 
 
-        <Button text="Cancel" onAction="#handleCancel"/> 
+        <Button fx:id="btnCancel" text="Cancel" onAction="#handleCancel"/> 
 
-        <Button text="Save" onAction="#handleSave" style="-fx-base: #4CAF50;"/> 
+        <Button fx:id="btnSave" text="Save" onAction="#handleSave" style="-fx-base: #4CAF50;"/> 
 
     </HBox> 
 

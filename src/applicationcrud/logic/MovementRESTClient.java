@@ -83,8 +83,12 @@ public class MovementRESTClient {
         client.close();
     }
 
-    public void create_XML(Movement movement) {
+    /*public void create_XML(Movement movement) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    }*/
+    // En MovementRESTClient.java
+    /*public void create_XML(Object requestEntity) throws ClientErrorException {
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
+             .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    }*/
 }
