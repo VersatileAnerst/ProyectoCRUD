@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.Sign_InController">
+   <children>
+      <Button fx:id="btSignIn" layoutX="501.0" layoutY="511.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="110.0" style="-fx-background-color: #00acff;" text="Sign In" />
+      <TextField fx:id="tfEmail" layoutX="353.0" layoutY="336.0" prefHeight="25.0" prefWidth="258.0" promptText="username@example.com">
+         <tooltip>
+            <Tooltip text="Email" />
+         </tooltip>
+      </TextField>
+      <PasswordField fx:id="pfPassword" layoutX="356.0" layoutY="418.0" prefHeight="25.0" prefWidth="258.0" promptText="********">
+         <tooltip>
+            <Tooltip text="Password" />
+         </tooltip>
+      </PasswordField>
+      <Hyperlink fx:id="hySignUp" layoutX="427.0" layoutY="453.0" text="Create Account">
+         <tooltip>
+            <Tooltip text="Sign Up" />
+         </tooltip>
+      </Hyperlink>
+      <Label fx:id="lbEmail" layoutX="301.0" layoutY="341.0" prefHeight="15.0" prefWidth="37.0" text="User:" />
+      <Label fx:id="lbPassword" layoutX="272.0" layoutY="423.0" text="Password:" />
+      <Button fx:id="btExit" layoutX="356.0" layoutY="511.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="110.0" text="Exit">
+         <tooltip>
+            <Tooltip text="Exit the program" />
+         </tooltip>
+      </Button>
+      <Label fx:id="lbError" layoutX="323.0" layoutY="484.0" prefHeight="15.0" prefWidth="319.0" text="" />
+   </children>
+</Pane>
