@@ -4,22 +4,29 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<HBox fx:id="menuBar" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
-   <children>
-      <MenuBar prefHeight="29.0" prefWidth="750.0">
-        <menus>
-          <Menu fx:id="menuAction" mnemonicParsing="false" text="Operations">
-            <items>
-              <MenuItem fx:id="menuItemLogout" mnemonicParsing="false" text="Logout" />
-            </items>
-          </Menu>
-          <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
-            <items>
-                  <MenuItem fx:id="menuItemHelp" mnemonicParsing="false" text="Accounts help" />
-                  <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </children>
+<HBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.MenuController">
+    <children>
+        <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="1024.0">
+            <menus>
+                <Menu fx:id="menuAction" text="Operations">
+                    <items>
+                        <MenuItem fx:id="menuItemLogout" text="Logout"/>
+                    </items>
+                </Menu>
+
+                <Menu fx:id="menuHelp" text="Help">
+                    <items>
+                        <MenuItem fx:id="menuItemHelp" text="Help"/>
+                    </items>
+                </Menu>
+
+                <Menu fx:id="menuAbout" text="About">
+                    <items>
+                        <MenuItem fx:id="menuItemAbout" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
 </HBox>
+

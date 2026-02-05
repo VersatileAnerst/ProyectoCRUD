@@ -67,6 +67,8 @@ public class AccountsController {
     @FXML
     private TableColumn<Account, Date> colDate;
     @FXML
+    private MenuController menuController;
+    @FXML
     private Label lbMessage;
     @FXML
     private Button btExit;
@@ -78,13 +80,7 @@ public class AccountsController {
     private Button btDelete;
     @FXML
     private Button btMovement;
-    @FXML
-    private MenuItem menuItemLogout;
-    @FXML
-    private MenuItem menuItemHelp;
-    @FXML
-    private MenuItem menuItemAbout;
-
+    
     private Stage stage;
 
     private Customer customer;
@@ -104,6 +100,8 @@ public class AccountsController {
             stage.setTitle("BankApp");
             //Ventana no redimensionable
             stage.setResizable(false);
+            //Controlador de menu
+            menuController.init(stage, root);
             //Tabla editable
             tblAccounts.setEditable(true);
             //Factorias para el valor de celda
@@ -146,17 +144,6 @@ public class AccountsController {
             btDelete.setOnAction(this::handleBtDeleteOnAction);
             btMovement.setOnAction(this::handleBtMovementOnAction);
             btExit.setOnAction(this::handleBtExitOnAction);
-            menuItemLogout.setOnAction(this::handleLogout);
-            menuItemHelp.setOnAction(this::handleHelp);
-            menuItemAbout.setOnAction(this::handleAbout);
-
-            //Accelerators del menu
-            menuItemLogout.setAccelerator(
-                    new KeyCodeCombination(KeyCode.ESCAPE, KeyCombination.CONTROL_DOWN));//Control + Escape  LogOut
-
-            // F1 para Help
-            menuItemHelp.setAccelerator(
-                    new KeyCodeCombination(KeyCode.F1));//F1 abre Help
 
             //Mostrar la ventana
             stage.show();
@@ -323,12 +310,13 @@ public class AccountsController {
     @FXML
     private void handleBtPostOnAction(ActionEvent event) {
         try {
+            //Creo una variable
             Account newAccount = new Account();
             Random id = new Random();
             //Genera ID aleatorio de 10 cifras
             long random = (long) (Math.random() * 900000000L) + 1000000000L;
             newAccount.setId(random);
-            //Valores por defecto
+            //Establezco Valores por defecto
             newAccount.setBeginBalanceTimestamp(new Date());
             newAccount.setType(AccountType.STANDARD);
             newAccount.setCreditLine(0.0);
@@ -356,31 +344,7 @@ public class AccountsController {
         }
 
     }
-
-    private void handleLogout(ActionEvent event) {
-        Stage stage = (Stage) btExit.getScene().getWindow();
-        stage.close();
-        LOGGER.info("Logout clicked");
-    }
-
-    private void handleHelp(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Help");
-        alert.setHeaderText("Accounts Help");
-        alert.setContentText("Aquí puedes consultar tus cuentas, hacer movimientos, actualizar o borrar.");
-        alert.showAndWait();
-        LOGGER.info("Help clicked");
-    }
-
-    private void handleAbout(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("About");
-        alert.setHeaderText("About BankApp");
-        alert.setContentText("BankApp v1.0\nAuthor: Jimmy y Daniel");
-        alert.showAndWait();
-        LOGGER.info("About clicked");
-    }
-
+   
     /**
      * Maneja la accion del boton Update
      *

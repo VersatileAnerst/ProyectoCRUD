@@ -8,10 +8,12 @@ package applicationcrud.ui;
 import applicationcrud.ApplicationCRUD;
 import applicationcrud.model.Account;
 import applicationcrud.model.AccountType;
+import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.FixMethodOrder;
@@ -26,6 +28,7 @@ import static org.testfx.matcher.base.NodeMatchers.isFocused;
  *
  * @author daniel
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountsControllerTest extends ApplicationTest {
 
     @Override
@@ -42,19 +45,15 @@ public class AccountsControllerTest extends ApplicationTest {
         write("qwerty*9876");
         clickOn("#btSignIn");
     }
-    @Ignore
-    @Test
-    public void Test_EXIT() {
-        //Comprueba el boton Exit esta enfocado
-        clickOn("Exit");
-        clickOn("Sí");
-
-    }
+    
 
     @Test
     public void test_1_TableSelectionEnablesButtons() {
-        clickOn("#tblAccounts");
-        type(KeyCode.DOWN);
+        //Selecciona las cuenta
+        Node row = lookup(".table-row-cell").nth(0).query();
+        assertNotNull("Row is null: table has not that row.", row);
+        clickOn(row);
+
 
         verifyThat("#btUpdate", NodeMatchers.isEnabled());
         verifyThat("#btDelete", NodeMatchers.isEnabled());
@@ -66,6 +65,10 @@ public class AccountsControllerTest extends ApplicationTest {
 
         // Clic en "Post" para crear nueva cuenta
         clickOn("#btPost");
+        
+        assertEquals("A row has not been added!", 
+                     sizeBefore + 1, 
+                     table.getItems().size());
 
         // Obtiene la última cuenta creada
         Account newAccount = table.getItems().get(table.getItems().size() - 1);
@@ -80,9 +83,6 @@ public class AccountsControllerTest extends ApplicationTest {
         });
 
         table.refresh();
-
-        // Verifica que la tabla aumentó 1 elemento
-        verifyThat("#tblAccounts", t -> ((TableView<Account>) t).getItems().size() == sizeBefore + 1);
 
         // Verifica que la cuenta tiene los datos correctos
         verifyThat("#tblAccounts", t -> ((TableView<Account>) t).getItems()
@@ -203,8 +203,7 @@ public class AccountsControllerTest extends ApplicationTest {
         assertEquals(0, countEmptyAfter);
     }
 
-    @Override
-    public void stop() {
-    }
+    
+    
 
 }
