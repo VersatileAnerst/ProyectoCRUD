@@ -5,9 +5,11 @@
  */
 package applicationcrud;
 
-import applicationcrud.ui.Sign_InController;
 
+
+import applicationcrud.ui.MovementController;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,17 +17,16 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author daniel
+ * @author jimmy
  */
-public class ApplicationCRUD extends Application {
+public class ApplicationCRUDMovement extends Application {
 
-@Override
 public void start(Stage stage) throws Exception {
 
-FXMLLoader loader= new FXMLLoader(getClass().getResource("ui/DisenoSignIn.fxml"));
+FXMLLoader loader= new FXMLLoader(getClass().getResource("ui/Movement.fxml"));
 Parent root = (Parent)loader.load();
 
-    Sign_InController controller =loader.getController();
+    MovementController controller =loader.getController();
     controller.init(stage, root);
     
         }
@@ -38,4 +39,4 @@ Parent root = (Parent)loader.load();
         launch(args);
     }
     
- }
+}

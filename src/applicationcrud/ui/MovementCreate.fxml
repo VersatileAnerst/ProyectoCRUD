@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<?import javafx.scene.control.*?> 
+
+<?import javafx.scene.layout.*?> 
+
+<?import javafx.geometry.Insets?> 
+
+  
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"  
+
+      fx:controller="applicationcrud.ui.MovementCreateController" prefWidth="300"> 
+
+    <padding> 
+
+        <Insets top="20" right="20" bottom="20" left="20"/> 
+
+    </padding> 
+
+     
+
+    <Label text="New Movement" style="-fx-font-size: 18; -fx-font-weight: bold;"/> 
+
+     
+
+    <Label text="Description:"/> 
+
+    <TextField fx:id="txtDescription" promptText="Enter concept..."/> 
+
+     
+
+    <Label text="Amount:"/> 
+
+    <TextField fx:id="txtAmount" promptText="0.00"/> 
+
+     
+
+    <HBox spacing="10" alignment="CENTER_RIGHT"> 
+
+        <Button fx:id="btnCancel" text="Cancel" onAction="#handleCancel"/> 
+
+        <Button fx:id="btnSave" text="Save" onAction="#handleSave" style="-fx-base: #4CAF50;"/> 
+
+    </HBox> 
+
+</VBox> 

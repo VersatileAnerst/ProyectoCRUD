@@ -11,17 +11,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Jersey REST client generated for REST resource:MovementFacadeREST
- * [movement]<br>
- * USAGE:
- * <pre>
- *        MovementRESTClient client = new MovementRESTClient();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
  *
- * @author daniel
+ * @author Jimmy
  */
 public class MovementRESTClient {
 
@@ -81,5 +72,4 @@ public class MovementRESTClient {
     public void close() {
         client.close();
     }
-    
 }

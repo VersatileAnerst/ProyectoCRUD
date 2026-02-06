@@ -24,7 +24,7 @@
 
     <!-- ID --> 
 
-    <Label text="ID:" layoutX="20" layoutY="20"/> 
+    <Label text="id" layoutX="20" layoutY="20"/> 
 
     <TextField fx:id="txtId" layoutX="60" layoutY="16" prefWidth="120"/> 
 
@@ -32,15 +32,15 @@
 
     <!-- Date filters --> 
 
-    <Label text="From:" layoutX="200" layoutY="20"/> 
+    <Label text="" layoutX="0" layoutY="0"/> 
 
-    <DatePicker fx:id="dpFromDate" layoutX="250" layoutY="16"/> 
+    
 
   
 
-    <Label text="To:" layoutX="420" layoutY="20"/> 
+    <Label text="" layoutX="0" layoutY="0"/> 
 
-    <DatePicker fx:id="dpToDate" layoutX="460" layoutY="16"/> 
+    
 
   
 
@@ -50,9 +50,9 @@
 
             text="Search" 
 
-            layoutX="640" 
+            layoutX="700" 
 
-            layoutY="16" 
+            layoutY="30" 
 
             onAction="#handleSearch"/> 
 
