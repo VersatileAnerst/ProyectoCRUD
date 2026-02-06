@@ -5,24 +5,14 @@
  */
 package applicationcrud.logic;
 
-import applicationcrud.model.Movement;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Jersey REST client generated for REST resource:MovementFacadeREST
- * [movement]<br>
- * USAGE:
- * <pre>
- *        MovementRESTClient client = new MovementRESTClient();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
  *
- * @author jimmy
+ * @author Jimmy
  */
 public class MovementRESTClient {
 
@@ -82,13 +72,4 @@ public class MovementRESTClient {
     public void close() {
         client.close();
     }
-
-    /*public void create_XML(Movement movement) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
-    // En MovementRESTClient.java
-    /*public void create_XML(Object requestEntity) throws ClientErrorException {
-        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML)
-             .post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
-    }*/
 }

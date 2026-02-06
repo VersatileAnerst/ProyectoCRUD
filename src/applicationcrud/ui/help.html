@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ayuda - Accounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 40px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        ul {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ayuda – BankCRUD</h1>
+
+    <h2>Botones</h2>
+    <ul>
+        <li><strong>Post:</strong> Crea una nueva cuenta con valores por defecto y la añade a la tabla.</li>
+        <li><strong>Update:</strong> Guarda los cambios realizados en la cuenta seleccionada.</li>
+        <li><strong>Delete:</strong> Elimina la cuenta seleccionada si no tiene movimientos asociados.</li>
+        <li><strong>Movement:</strong> Abre una nueva ventana para consultar y gestionar los movimientos de la cuenta seleccionada.</li>
+        <li><strong>Exit:</strong> Cierra la sesión actual después de confirmar la acción.</li>
+    </ul>
+
+    <h2>Edición en la tabla</h2>
+    <ul>
+        <li><strong>Description:</strong> Permite editar la descripción de la cuenta.</li>
+        <li><strong>Begin Balance:</strong> Solo se puede editar al crear una cuenta nueva.</li>
+        <li><strong>Credit Line:</strong> Solo editable si la cuenta es de tipo CREDIT.</li>
+        <li><strong>Type:</strong> Permite cambiar el tipo de cuenta (STANDARD, CREDIT, etc.).</li>
+    </ul>
+
+</body>
+</html>

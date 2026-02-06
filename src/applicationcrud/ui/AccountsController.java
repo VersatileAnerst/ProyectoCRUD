@@ -10,8 +10,10 @@ import applicationcrud.model.Account;
 import applicationcrud.model.AccountType;
 import applicationcrud.model.Customer;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,15 +26,21 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.GenericType;
 
@@ -59,6 +67,8 @@ public class AccountsController {
     @FXML
     private TableColumn<Account, Date> colDate;
     @FXML
+    private MenuController menuController;
+    @FXML
     private Label lbMessage;
     @FXML
     private Button btExit;
@@ -70,7 +80,7 @@ public class AccountsController {
     private Button btDelete;
     @FXML
     private Button btMovement;
-
+    
     private Stage stage;
 
     private Customer customer;
@@ -84,10 +94,14 @@ public class AccountsController {
             LOGGER.info("Initializing Account window.");
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            //Ventana Modal
+            stage.initModality(Modality.APPLICATION_MODAL);
             //Establecer el titulo de la ventana en "Bank App"
             stage.setTitle("BankApp");
             //Ventana no redimensionable
             stage.setResizable(false);
+            //Controlador de menu
+            menuController.init(stage, root);
             //Tabla editable
             tblAccounts.setEditable(true);
             //Factorias para el valor de celda
@@ -101,70 +115,53 @@ public class AccountsController {
             //Factorias de Celda
             //Descripcion
             colDescription.setCellFactory(TextFieldTableCell.<Account>forTableColumn());
-            colDescription.setOnEditCommit(
-                    (CellEditEvent<Account, String> t) -> {
-                        t.getRowValue().setDescription(t.getNewValue());
-                    });
+            colDescription.setOnEditCommit(this::handleDescriptionEdit);
+            //BeginBalance
+            colBeginBalance.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+            colBeginBalance.setOnEditCommit(this::handleBeginBalance);
             //CreditLine
             colCreditLine.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-            colCreditLine.setOnEditCommit(
-                (CellEditEvent<Account, Double> t) -> {
-                    Account account = t.getRowValue();
-                    if (account.getType() == AccountType.CREDIT) {
-                        account.setCreditLine(t.getNewValue());
-                        lbMessage.setText("");
-                    }else{
-                        t.getTableView().refresh();
-                        LOGGER.info("Table Updated");
-                        lbMessage.setText("Only Credit Accounts can edit CreditLine");
-                        }
-                    });
+            colCreditLine.setOnEditCommit(this::handleCreditLineEdit);
             //Tipo de cuenta
             colType.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<AccountType>() {
                 @Override
                 public String toString(AccountType type) {
-                return type == null ? "" : type.name();
-                    }
+                    return type == null ? "" : type.name();
+                }
 
                 @Override
                 public AccountType fromString(String string) {
                     return AccountType.valueOf(string);
-                 }
-                }, AccountType.values()));
-            colType.setOnEditCommit(
-                (CellEditEvent<Account, AccountType> t) -> {
-                t.getRowValue().setType(t.getNewValue());
-                });
+                }
+            }, AccountType.values()));
+            colType.setOnEditCommit(this::handleTypeEdit);
             //Seleccion en Tabla
             tblAccounts.getSelectionModel().selectedItemProperty()
-                        .addListener(this::handleAccountsTableSelectionChanged);
+                    .addListener(this::handleAccountsTableSelectionChanged);
             //Asociar Eventos A Manejadores
             btPost.setOnAction(this::handleBtPostOnAction);
             btUpdate.setOnAction(this::handleBtUpdateOnAction);
             btDelete.setOnAction(this::handleBtDeleteOnAction);
             btMovement.setOnAction(this::handleBtMovementOnAction);
             btExit.setOnAction(this::handleBtExitOnAction);
-            // Botones deshabilitados
-            btUpdate.setDisable(true);
-            btDelete.setDisable(true);
-            btMovement.setDisable(true);
 
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Account window initialized");
-                    } catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
                     "Error Opening Window: " + e.getLocalizedMessage())
                     .showAndWait();
         }
-        }
-        /**
-         * Este metodo establece el customer del signIn y carga los datos de las
-         * cuentas
-         *
-         * @param customer
-         */
+    }
+
+    /**
+     * Este metodo establece el customer del signIn y carga los datos de las
+     * cuentas
+     *
+     * @param customer
+     */
     public void setCustomer(Customer customer) {
         try {
             this.customer = customer;
@@ -194,11 +191,89 @@ public class AccountsController {
             Object newValue) {
 
         if (newValue != null) {
-            btPost.setDisable(false);
             btUpdate.setDisable(false);
             btDelete.setDisable(false);
             btMovement.setDisable(false);
         }
+    }
+
+    /**
+     * Metodo que maneja la accion de la celda Description
+     *
+     * @param event
+     */
+    private void handleDescriptionEdit(CellEditEvent<Account, String> event) {
+        Account account = event.getRowValue();
+        //Para la descripcion
+        account.setDescription(event.getNewValue());
+        //Guarda la descripcion en la base de datos
+        client.updateAccount_XML(account);
+        LOGGER.info("Description Updated");
+    }
+
+    /**
+     * Metodo que maneja la edicion de celda de Credit line
+     *
+     * @param event
+     */
+    private void handleCreditLineEdit(CellEditEvent<Account, Double> event) {
+        Account account = event.getRowValue();
+        //Si el type es Credit se puede editar 
+        if (account.getType() == AccountType.CREDIT) {
+            //Actualiza en la tabla
+            account.setCreditLine(event.getNewValue());
+            //Actualiza en la base de atos
+            client.updateAccount_XML(account);
+            lbMessage.setText("");
+        } else {
+            //Si no es type Credit la tabla se refresca y muestra un mensaje
+            event.getTableView().refresh();
+            LOGGER.info("Table Updated");
+            lbMessage.setText("Only Credit Accounts can edit CreditLine");
+        }
+    }
+
+    /**
+     * Metodo que maneja la edicion de la celda begin balance solo al crear
+     * nueva cuenta
+     *
+     * @param event
+     */
+    private void handleBeginBalance(CellEditEvent<Account, Double> event) {
+        Account account = event.getRowValue();
+        Double newBeginBalance = event.getNewValue();
+        if (account.getBeginBalance() != null) {
+            event.getTableView().refresh();
+            lbMessage.setText("Begin Balance is not editable");
+            return;
+        }
+        if (newBeginBalance == null) {
+            event.getTableView().refresh();
+            return;
+        }
+
+        // Establece el beginBalance y sincroniza el balance actual
+        account.setBeginBalance(newBeginBalance);
+        account.setBalance(newBeginBalance);
+
+        client.updateAccount_XML(account);
+
+        LOGGER.info("BeginBalance established");
+    }
+
+    /**
+     * Metodo que maneja la edicion de celda de AccountType
+     *
+     * @param event
+     */
+    private void handleTypeEdit(CellEditEvent<Account, AccountType> event) {
+        Account account = event.getRowValue();
+        account.setType(event.getNewValue());
+
+        //Lo guarda en la base de datos
+        client.updateAccount_XML(account);
+
+        LOGGER.info("Account Type Updated");
     }
 
     /**
@@ -226,25 +301,31 @@ public class AccountsController {
                     .showAndWait();
         }
     }
+
     /**
      * Maneja la accion del boton Post
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void handleBtPostOnAction(ActionEvent event) {
         try {
+            //Creo una variable
             Account newAccount = new Account();
             Random id = new Random();
             //Genera ID aleatorio de 10 cifras
-            long random = (long)(Math.random() * 900000000L)+ 1000000000L;
+            long random = (long) (Math.random() * 900000000L) + 1000000000L;
             newAccount.setId(random);
-            //Valores por defecto
-            newAccount.setBalance(0.0);
-            newAccount.setBeginBalance(newAccount.getBalance());
+            //Establezco Valores por defecto
             newAccount.setBeginBalanceTimestamp(new Date());
             newAccount.setType(AccountType.STANDARD);
             newAccount.setCreditLine(0.0);
             newAccount.setDescription("");
+            //Creo un hash set y añado el customer para que se asocie a la cuenta
+            Set<Customer> customers = new HashSet<>();
+            customers.add(customer);
+            newAccount.setCustomers(customers);
+            //Anadir a la tabla
             tblAccounts.getItems().add(newAccount);
             tblAccounts.getSelectionModel().select(newAccount);
             //Funcion del RESTClient Crea la cuenta
@@ -263,9 +344,11 @@ public class AccountsController {
         }
 
     }
+   
     /**
      * Maneja la accion del boton Update
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     private void handleBtUpdateOnAction(ActionEvent event) {
@@ -321,25 +404,21 @@ public class AccountsController {
                 LOGGER.info("Account not deleted Action canceled");
                 return;
             }
-            //Elimina la cuenta seleccionada si no tiene nngun movimiento
-            if (selectedAccount.getMovements() == null
-                    || selectedAccount.getMovements().isEmpty()) {
+            //Elimina la cuenta seleccionada si no tiene ningun movimiento
+            if (selectedAccount.getMovements() != null && !selectedAccount.getMovements().isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, 
+                        "This account has movements and cannot be deleted",
+                        ButtonType.OK).showAndWait();
+            } else {
                 //Llama a una funcion del AccountRestClient
                 client.removeAccount(selectedAccount.getId().toString());
                 //Borro la fila de la tabla
                 tblAccounts.getItems().remove(selectedAccount);
+                tblAccounts.refresh();
 
                 LOGGER.info("Account Deleted");
-                lbMessage.setText("");
-            } else {
-                //Si tiene movimientos no sera eliminado y mostrara un mensaje por pantalla
-                lbMessage.setText("Account cannot be deleted, it has Movements");
-                LOGGER.info("Account not Deleted");
             }
-            //Refresca la tabla
-            tblAccounts.refresh();
-            LOGGER.info("Table Account Updated");
-        } catch (Exception e) {
+        } catch (ClientErrorException e) {
             LOGGER.warning(e.getLocalizedMessage());
             new Alert(Alert.AlertType.ERROR,
                     "Error Deleting Account:" + e.getLocalizedMessage())

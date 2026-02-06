@@ -78,6 +78,7 @@ public class Sign_InController {
         pfPassword.setOnAction(this::handleBtSignInOnAction);
         //Asociación de manejadores a properties
         tfEmail.textProperty().addListener(this::handleTfEmailTextChange);
+        //Campo que enfoca el campo email innecesario
         //tfEmail.focusedProperty().addListener(this::handleTfEmailFocusChange);
         pfPassword.textProperty().addListener(this::handlePfPasswordTextChange);
         checkFields(); 
@@ -125,7 +126,7 @@ public class Sign_InController {
      * @param oldvalue
      * @param newValue 
      */
-    private void handleTfEmailFocusChange(ObservableValue observable,
+    /*private void handleTfEmailFocusChange(ObservableValue observable,
             Boolean oldValue, Boolean newValue){
         try{
         if(oldValue){
@@ -139,7 +140,7 @@ public class Sign_InController {
                  "Error Focusing User: " + e.getLocalizedMessage())
                  .showAndWait();
         }
-    }
+    }*/
     /**
      * Este metodo sirve para comprobar si se el PfPassword esta completo
      * @param observable
@@ -165,7 +166,8 @@ public class Sign_InController {
                  .showAndWait();
     }
    }/**
-    * Este metodo comprueba que ambos campos estan informados y deshabilita si hay un campo vacio
+    * Este metodo comprueba que ambos campos estan informados y
+    * deshabilita el boton si hay un campo vacio
     * 
     */
     private void checkFields() {
@@ -196,7 +198,23 @@ public class Sign_InController {
                  .showAndWait();
         }
     }
-    
+    /**
+     * Este metodo maneja la accion del enlace SignUp 
+     * @param event 
+     */
+    private void handleHySignUpOnAction(ActionEvent event){
+       try{
+       FXMLLoader loader= new FXMLLoader(getClass().getResource("proyectosignUpNewCustomer.fxml"));
+        Parent root = (Parent)loader.load();
+        Sign_UpController controller =loader.getController();
+        controller.init(stage, root);
+       }catch (Exception e){
+           LOGGER.warning(e.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                 "HyperLink error: " + e.getLocalizedMessage())
+                 .showAndWait(); 
+       }  
+    }
     /**
      * Este metodo maneja la accion del Boton Sign In
      * @param event 
@@ -211,6 +229,7 @@ public class Sign_InController {
         }else{
             lbError.setText("");
         }
+        //Comprueba que el nombre de usuario contiene punto y arroba
         if (!tfEmail.getText().trim().contains("@") && 
                 !tfEmail.getText().trim().contains(".")){
             lbError.setText("Username(Email) need to contains @ and .");
@@ -227,15 +246,17 @@ public class Sign_InController {
         Customer customer = client.findCustomerByEmailPassword_XML(Customer.class, customerUsername, customerPassword);
         LOGGER.info("Customer Signing In Succesfull.");
         
-        //Abro la ventana Result si el Cliente inicia sesion
+        //Abro la ventana Accounts si el Cliente inicia sesion
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Accounts.fxml"));
         Parent root = (Parent)loader.load();
         AccountsController controller =loader.getController();
-        
-        controller.init(stage, root);
+        Stage accountStage = new Stage(); 
+
+        controller.init(accountStage, root);
+        //Le paso el customer al controlador Accounts
         controller.setCustomer(customer);
       
-        stage.show();//Abre la nueva ventana
+        accountStage.show();//Abre la nueva ventana
         
         LOGGER.info("Accounts window initialized");
         
@@ -253,8 +274,4 @@ public class Sign_InController {
                  "Sign In error").showAndWait();
         }
     }    
-
-    public void initStage(Stage stage, Parent root) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

@@ -17,6 +17,11 @@
             <Tooltip text="Password" />
          </tooltip>
       </PasswordField>
+      <Hyperlink fx:id="hySignUp" layoutX="427.0" layoutY="453.0" text="Create Account">
+         <tooltip>
+            <Tooltip text="Sign Up" />
+         </tooltip>
+      </Hyperlink>
       <Label fx:id="lbEmail" layoutX="301.0" layoutY="341.0" prefHeight="15.0" prefWidth="37.0" text="User:" />
       <Label fx:id="lbPassword" layoutX="272.0" layoutY="423.0" text="Password:" />
       <Button fx:id="btExit" layoutX="356.0" layoutY="511.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="110.0" text="Exit">
