@@ -27,6 +27,9 @@ import static org.testfx.matcher.base.NodeMatchers.isFocused;
 /**
  *
  * @author daniel
+ * @fixme Los métodos de test presentados son insuficientes.
+ * @fixme Crear sendos métodos de test para Read,Create,Update y Delete sobre la tabla de Cuentas que verifiquen sobre los items de la tabla cada caso de uso.
+
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountsControllerTest extends ApplicationTest {
