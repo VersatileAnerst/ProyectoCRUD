@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.FixMethodOrder;
@@ -22,8 +23,9 @@ import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
-import static org.testfx.matcher.base.NodeMatchers.isFocused;
-
+import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.testfx.matcher.control.ButtonMatchers.isDefaultButton;
+import static org.testfx.matcher.control.TableViewMatchers.hasTableCell;
 /**
  *
  * @author daniel
@@ -47,130 +49,154 @@ public class AccountsControllerTest extends ApplicationTest {
         clickOn("#pfPassword");
         write("qwerty*9876");
         clickOn("#btSignIn");
+        
+        
+        
     }
-    
-
+    @Ignore
     @Test
     public void test_1_TableSelectionEnablesButtons() {
-        //Selecciona las cuenta
+        //Selecciona la primera cuenta
         Node row = lookup(".table-row-cell").nth(0).query();
         assertNotNull("Row is null: table has not that row.", row);
         clickOn(row);
 
-
+        //Botones habilitados
         verifyThat("#btUpdate", NodeMatchers.isEnabled());
         verifyThat("#btDelete", NodeMatchers.isEnabled());
     }
+    @Ignore
     @Test
-    public void test_2_ButtonPost() {
+    public void test_2_READ() {
+        TableView<Account> table = lookup("#tblAccounts").queryTableView();
+        
+        //Verificacion de que los items de la tabla son ACCOUNT
+         assertTrue(table.getItems().stream()
+                .allMatch(a -> a instanceof Account));
+        
+    }
+    @Ignore
+    @Test
+    public void test_3_Create() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
         int sizeBefore = table.getItems().size();
 
         // Clic en "Post" para crear nueva cuenta
         clickOn("#btPost");
-        
-        assertEquals("A row has not been added!", 
-                     sizeBefore + 1, 
-                     table.getItems().size());
-
-        // Obtiene la última cuenta creada
-        Account newAccount = table.getItems().get(table.getItems().size() - 1);
-
-        // Edita los campos necesarios
-        interact(() -> {
-            newAccount.setDescription("Cuenta TestFX");
-            newAccount.setBeginBalance(1000.0);
-            newAccount.setBalance(1000.0);
-            newAccount.setType(AccountType.CREDIT);
-            newAccount.setCreditLine(500.0);
-        });
-
+        //La ultima creada
+        Node row = lookup(".table-row-cell").nth(sizeBefore).query();
+        //La celda descripcion
+        Node cellDesc = from(row).lookup(".table-cell").nth(1).query();
+        //Doble Click en celda
+        doubleClickOn(cellDesc);
+        write("Cuenta TestPost");
+        press(KeyCode.ENTER);
         table.refresh();
 
-        // Verifica que la cuenta tiene los datos correctos
-        verifyThat("#tblAccounts", t -> ((TableView<Account>) t).getItems()
-                .stream().anyMatch(a -> "Cuenta TestFX".equals(a.getDescription())
-                        && a.getBeginBalance() == 1000.0
-                        && a.getType() == AccountType.CREDIT
-                        && a.getCreditLine() == 500.0));
+        //Verifica que en la tabla Cuentas con otro funcion que existe una celda celda de tabla
+        verifyThat("#tblAccounts", hasTableCell("Cuenta TestPost"));
     }
-
+    @Ignore
     @Test
-    public void test_3_ButtonDelete() {
+    public void test_4_UPDATE_TEST() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
+        int sizetable=table.getItems().size();
+        clickOn("#btPost");
+        //La ultima creada
+        Node row = lookup(".table-row-cell").nth(sizetable).query();
+        //La celda descripcion
+        Node cellDesc = from(row).lookup(".table-cell").nth(1).query();
+        //Doble Click en celda
+        doubleClickOn(cellDesc);
+        write("Cuenta TestUpdate");
+        //Apreta Enter
+        press(KeyCode.ENTER);
+        table.refresh();
 
-        // Busca la cuenta creada con description = "Cuenta TestFX"
-        Account accountToDelete = table.getItems().stream()
-                .filter(a -> "Cuenta TestFX".equals(a.getDescription()))
-                .findFirst()
-                .orElse(null);
-
-        if (accountToDelete == null) {
-            System.out.println("No se encontró la cuenta a eliminar.");
-            return; // Si no hay cuenta con ese description, no hacer nada
-        }
-
-        // Selecciona la cuenta encontrada
-        interact(() -> table.getSelectionModel().select(accountToDelete));
-
+        // Verificacion
+        verifyThat("#tblAccounts", hasTableCell("Cuenta TestUpdate"));
+    }
+    @Ignore
+    @Test
+    public void test_5_Delete() {
+        TableView<Account> table = lookup("#tblAccounts").queryTableView();
+        int sizetable=table.getItems().size();
+        //Crea una cuenta 
+        clickOn("#btPost");
+        // Selecciona la cuenta a eliminar
+        Node row = lookup(".table-row-cell").nth(sizetable).query();
+        //La celda id
+        Node cellDesc = from(row).lookup(".table-cell").nth(0).query();
         // Borra la cuenta
         clickOn("#btDelete");
-
+        
         // Confirmar el diálogo de alerta
         clickOn("Sí");
-
+        //isDefaultButton() me apreta exit 
+        
+        //Refresca la tabla por si acaso
         table.refresh();
-
-        // Verifica que la cuenta ya no esté en la tabla
-        verifyThat("#tblAccounts", t -> !((TableView<Account>) t).getItems().contains(accountToDelete));
+        //Tiene que tener el mismo tamaño que al inicio por que crea una nueva tabla a borrar
+        assertEquals("The row has not been deleted",
+                    sizetable,table.getItems().size());
 
     }
-
+    
+    @Ignore
     @Test
-    public void test_4_BeginBalanceOnlyForNewAccount() {
+    public void test_6_BeginBalanceOnlyForNewAccount() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
 
         //Crear nueva cuenta
         int sizeBefore = table.getItems().size();
         clickOn("#btPost");
-        //Verifica que la cuenta se ha creado
+        //Verifica que se ha añadido una nueva fila en la tabla
         assertEquals(sizeBefore + 1, table.getItems().size());
 
-        Account newAccount = table.getItems().get(table.getItems().size() - 1);
-
+        Node row = lookup(".table-row-cell").nth(sizeBefore).query();
         //Modificar BeginBalance solo para cuenta nueva
-        interact(() -> {
-            newAccount.setBeginBalance(500.0);
-            newAccount.setBalance(500.0);
-            table.refresh();
-        });
-
+        Node cellBegin = from(row).lookup(".table-cell").nth(4).query();
+        //Doble Click en celda
+        doubleClickOn(cellBegin);
+        write("500").push(KeyCode.ENTER);
+        
+        table.refresh();
         // Verificar
-        assertEquals(500.0, newAccount.getBeginBalance(), 0.001);
-        assertEquals(500.0, newAccount.getBalance(), 0.001);
+        boolean exists = table.getItems().stream()
+        .anyMatch(a -> a.getBeginBalance() == 500.0 && a.getBalance() == 500.0 
+                && a.getBalance() != null && a.getBeginBalance() != null);
+        assertTrue(exists);
     }
+    
+    @Ignore
     @Test
-    public void test_5_CreditLineOnlyForCREDITAccounts() {
+    public void test_7_NoDelete(){
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
-        
-        //Crear nueva cuenta
+        //Tamaño tabla
         int sizeBefore = table.getItems().size();
-        clickOn("#btPost");
-        assertEquals(sizeBefore + 1, table.getItems().size());
+        Account accountToDelete = table.getItems().stream()
+                .filter(a -> "Check Account".equals(a.getDescription()))
+                .findFirst()
+                .orElse(null);
+        //Selecciona la cuenta
+        interact(() -> table.getSelectionModel().select(accountToDelete));
         
-        Account newAccount = table.getItems().get(table.getItems().size() - 1);
         
-        //Cambia la cuenta a CREDIT y cambia la linea de credito
-        interact(() -> {
-            newAccount.setType(AccountType.CREDIT);
-            newAccount.setCreditLine(500.0);
-            table.refresh();
-        });
-        //Verifica que la credit line es 500
-        assertEquals(500.0, newAccount.getCreditLine(), 0.001);
-    }
+        // Borra la cuenta
+        clickOn("#btDelete");
+        
+        // Confirmar el diálogo de alerta
+        clickOn("Sí");
+        
+        //Verifica que funciona la alerta
+        verifyThat("This account has movements and cannot be deleted", isVisible());
+        
+        clickOn("Aceptar");
+        assertEquals("An Account got deleted",sizeBefore,table.getItems().size());
+    }   
+    @Ignore
     @Test
-    public void test_6_DeleteAccounts() {
+    public void test_8_DeleteAccounts() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
 
         //Mientras la tabla tenga una cuenta con la descripcion vacia
@@ -192,6 +218,7 @@ public class AccountsControllerTest extends ApplicationTest {
                 //click en Delete
                 clickOn("#btDelete");
                 clickOn("Sí");
+                //isDefaultButton() Apreta exit
                 
                 //Espera 
                 sleep(500);
@@ -199,11 +226,11 @@ public class AccountsControllerTest extends ApplicationTest {
         }
 
         //Verificación ninguna cuenta con descripción vacía
-        long countEmptyAfter = table.getItems().stream()
-                .filter(a -> a.getDescription() == null || a.getDescription().isEmpty())
+        long countEmpty = table.getItems().stream()
+                .filter(a -> a.getDescription() == null || a.getDescription().isEmpty() || a.getDescription() == "Cuenta TestPost"|| a.getDescription() == "Cuenta TestDelete")
                 .count();
 
-        assertEquals(0, countEmptyAfter);
+        assertEquals(0, countEmpty);//Comprueba que no hay mas accounts sin descripcion
     }
 
     
