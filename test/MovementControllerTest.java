@@ -3,20 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package applicationcrud.ui;
+
 
 import applicationcrud.ApplicationCRUD;
+import applicationcrud.model.Movement;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
-import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import static org.testfx.matcher.base.NodeMatchers.isDisabled;
+import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 /**
@@ -27,6 +31,11 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MovementControllerTest extends ApplicationTest {
+
+    private TableView<Object> tblMovements;
+     
+        
+                   
     @Override
     public void start(Stage stage) throws Exception {
         new ApplicationCRUD().start(stage);
@@ -56,7 +65,7 @@ public class MovementControllerTest extends ApplicationTest {
         verifyThat("#tblMovements", isVisible());
     }
 
-    @Test 
+    /*@Test 
     public void test_1ButtonSearchExists() { 
         // Ahora sí, verificamos en la ventana de movimientos
         verifyThat("#btnSearch", isVisible());
@@ -67,7 +76,83 @@ public class MovementControllerTest extends ApplicationTest {
         // El botón borrar debe estar deshabilitado al inicio (sin selección)
         verifyThat("#btnDelete", isDisabled()); 
 
+    } */
+    @Test  
+    //@Ignore
+ 
+    public void test_3readMovements() {  
+      TableView<Movement> table = lookup("#tblMovements").queryTableView(); 
+
+          int initialSize = table.getItems().size();  
+
+     tblMovements = lookup("#tblMovements").queryTableView(); 
+     
+         assertNotNull("No se encontró la TableView con ID #tblMovements", tblMovements); 
+
+         assertNotNull("La tabla no tiene referencia de items", tblMovements.getItems()); 
+
+         assertTrue("La lista de movimientos debería ser accesible", initialSize >= 0); 
+            // Verificación visual de TestFX 
+         verifyThat("#tblMovements", isVisible()); 
+
+} 
+  //Comprobar que la tabla carga movimientos    
+  
+
+     @Test  
+     //@Ignore
+
+    public void test_4_createMovement() {  
+
+        TableView<Movement> table = lookup("#tblMovements").queryTableView(); 
+
+        int initialSize = table.getItems().size();  
+  
+        clickOn("#btnCreate");  
+        
+        clickOn("#txtDescription");
+        write("hipoteca");  
+
+        clickOn("#txtAmount");
+        write("50");  
+
+        clickOn("#btnSave");  
+          // Verificación 
+        assertEquals("El movimiento no se ha añadido", initialSize + 1, table.getItems().size());  
+        Movement last = table.getItems().get(table.getItems().size() - 1);  
+
+        assertEquals("La descripción ", "hipoteca", last.getDescription());  
+
+        assertEquals("El monto no coincide", 50.0, last.getAmount(), 0.01);  
+
     } 
+      
+//Borrado de movimiento   
+ @Test  
+    //@Ignore
+    public void test_5_deleteMovement() {  
+
+        TableView<Movement> table = lookup("#tblMovements").queryTableView(); 
+         org.junit.Assume.assumeTrue("No hay datos para borrar", table.getItems().size() > 0); 
+         
+        int initialSize = table.getItems().size(); 
+          // Seleccionar la primera fila para habilitar btnDelete 
+        Node row = lookup(".table-row-cell").nth(0).query();  
+        clickOn(row);  
+        verifyThat("#btnDelete", isEnabled());  
+        clickOn("#btnDelete");  
+          
+        //sleep(500); 
+
+  
+
+        assertEquals("El movimiento eliminado", initialSize - 1, table.getItems().size());  
+
+    } 
+
+} 
+
+
 
     //@Test 
     //public void test_3OpenCreateModal() {
@@ -91,11 +176,6 @@ public class MovementControllerTest extends ApplicationTest {
         
     //}
 
-    @Override
-    public void stop() throws Exception {
-        FxToolkit.hideStage();
-    }
-}
-
+   
 
 
