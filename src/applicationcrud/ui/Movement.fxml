@@ -20,8 +20,10 @@
 
     prefHeight="600"> 
 
-  
+        <!--FIXME: NO TOCAR la siguiente modificación necesaria: fx:id deber tener el valor "menuInclude" -->
+        <fx:include source="Menu.fxml" fx:id="menuInclude"/>
 
+        
     <!-- ID --> 
 
     <Label text="id" layoutX="20" layoutY="20"/> 

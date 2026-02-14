@@ -7,7 +7,10 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
     <children>
-        <fx:include fx:id="menu" source="Menu.fxml" />
+        <!--fx:include fx:id="menu" source="Menu.fxml" /-->
+        <!--FIXME: NO TOCAR la siguiente modificación necesaria: fx:id deber tener el valor "menuInclude" -->
+        <fx:include source="Menu.fxml" fx:id="menuInclude"/>
+        
         <TableView fx:id="tblAccounts" layoutX="20.0" layoutY="58.0" prefHeight="550.0" prefWidth="887.0">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="92.0" resizable="false" text="ID" />

@@ -20,7 +20,22 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.ws.rs.core.GenericType;
 
+/**
+ * @todo @fixme Hacer que la siguiente clase implemente las interfaces 
+ * Initializable y MenuActionsHandler para que al pulsar en las acciones CRUD del 
+ * menú Actions se ejecuten los métodos manejadores correspondientes a la vista 
+ * que incluye el menú.
+ * El método initialize debe llamar a setMenuActionsHandler() para establecer que este
+ * controlador es el manejador de acciones del menú.
+*/
 public class MovementController {
+    
+    /**
+     * TODO: NO TOCAR La siguiente referencia debe llamarse así y tener este tipo.
+     * JavaFX asigna automáticamente el campo menuIncludeController cuando usas fx:id="menuInclude".
+     */
+    @FXML
+    private MenuController menuIncludeController;
 
     @FXML private TableView<Movement> tblMovements;
     @FXML private TableColumn<Movement, Date> colDate;
