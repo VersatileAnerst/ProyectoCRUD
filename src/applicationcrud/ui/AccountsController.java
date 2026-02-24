@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Handler;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -98,8 +97,6 @@ public class AccountsController implements Initializable, MenuActionsHandler{
     private Button btMovement;
     
     private Stage stage;
-    
-    private Handler handler;
 
     private Customer customer;
     
@@ -119,7 +116,7 @@ public class AccountsController implements Initializable, MenuActionsHandler{
             //Ventana no redimensionable
             stage.setResizable(false);
             //Controlador de menu
-            menuController.init(stage, root);
+            //menuController.init(stage, root);
             //Tabla editable
             tblAccounts.setEditable(true);
             //Factorias para el valor de celda
@@ -505,7 +502,7 @@ public class AccountsController implements Initializable, MenuActionsHandler{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setMenuActionsHandler();
+        menuIncludeController.setMenuActionsHandler(this);
     }
 
 
