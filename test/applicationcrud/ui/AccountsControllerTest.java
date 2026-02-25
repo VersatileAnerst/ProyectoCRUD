@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -94,11 +95,13 @@ public class AccountsControllerTest extends ApplicationTest {
         write("Cuenta TestPost");
         press(KeyCode.ENTER);
         table.refresh();
-
-        //Verifica que en la tabla Cuentas con otro funcion que existe una celda celda de tabla
-        verifyThat("#tblAccounts", hasTableCell("Cuenta TestPost"));
+        
+        assertEquals("La fila no se añadió a la tabla", sizeBefore + 1, table.getItems().size());
+        //Verifica que en la tabla Cuentas que se encuentra una cuenta con la descripcion TestPost
+        assertTrue("La Cuenta TestPost no se encuentra en la tabla",
+                table.getItems().stream().anyMatch(a -> a.getDescription().equals("Cuenta TestPost")));
     }
-    //@Ignore
+    @Ignore
     @Test
     public void test_4_UPDATE_TEST() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
@@ -116,19 +119,22 @@ public class AccountsControllerTest extends ApplicationTest {
         table.refresh();
 
         // Verificacion
-        verifyThat("#tblAccounts", hasTableCell("Cuenta TestUpdate"));
+        assertTrue("La Cuenta TestUpdate no se encuentra en la tabla",
+                table.getItems().stream().anyMatch(a -> a.getDescription().equals("Cuenta TestUpdate")));
     }
-    //@Ignore
+    @Ignore
     @Test
     public void test_5_Delete() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
         int sizetable=table.getItems().size();
         //Crea una cuenta 
         clickOn("#btPost");
+        //La cuenta creada pillo el id 
+        Account accountCreated = table.getItems().get(sizetable);
+        Long id = accountCreated.getId();
         // Selecciona la cuenta a eliminar
         Node row = lookup(".table-row-cell").nth(sizetable).query();
-        //La celda id
-        Node cellDesc = from(row).lookup(".table-cell").nth(0).query();
+        
         // Borra la cuenta
         clickOn("#btDelete");
         
@@ -138,13 +144,17 @@ public class AccountsControllerTest extends ApplicationTest {
         
         //Refresca la tabla por si acaso
         table.refresh();
+        //Verifica que no hay ninguna cuenta con esa Descripcion
+        boolean CuentaExiste = table.getItems().stream()
+                               .anyMatch(a -> a.getId().equals(id));
+        assertFalse("Account not deleted ID found", CuentaExiste);
         //Tiene que tener el mismo tamaño que al inicio por que crea una nueva tabla a borrar
         assertEquals("The row has not been deleted",
                     sizetable,table.getItems().size());
 
     }
     
-    //@Ignore
+    @Ignore
     @Test
     public void test_6_BeginBalanceOnlyForNewAccount() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
@@ -170,7 +180,7 @@ public class AccountsControllerTest extends ApplicationTest {
         assertTrue(exists);
     }
     
-    //@Ignore
+    @Ignore
     @Test
     public void test_7_NoDelete(){
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
@@ -196,7 +206,7 @@ public class AccountsControllerTest extends ApplicationTest {
         clickOn("Aceptar");
         assertEquals("An Account got deleted",sizeBefore,table.getItems().size());
     }   
-    //@Ignore
+    @Ignore
     @Test
     public void test_8_DeleteAccounts() {
         TableView<Account> table = lookup("#tblAccounts").queryTableView();
