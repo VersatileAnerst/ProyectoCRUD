@@ -9,10 +9,15 @@ import applicationcrud.logic.AccountRESTClient;
 import applicationcrud.model.Account;
 import applicationcrud.model.AccountType;
 import applicationcrud.model.Customer;
+import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +25,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -43,12 +49,30 @@ import javafx.util.converter.DoubleStringConverter;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.GenericType;
-
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 /**
  *
  * @author Daniel
+ * @todo @fixme Hacer que la siguiente clase implemente las interfaces 
+ * Initializable y MenuActionsHandler para que al pulsar en las acciones CRUD del 
+ * menú Actions se ejecuten los métodos manejadores correspondientes a la vista 
+ * que incluye el menú.
+ * El método initialize debe llamar a setMenuActionsHandler() para establecer que este
+ * controlador es el manejador de acciones del menú.
  */
-public class AccountsController {
+public class AccountsController implements Initializable, MenuActionsHandler{
+    /**
+     * TODO: NO TOCAR La siguiente referencia debe llamarse así y tener este tipo.
+     * JavaFX asigna automáticamente el campo menuIncludeController cuando usas fx:id="menuInclude".
+     */
+    @FXML
+    private MenuController menuIncludeController;
 
     @FXML
     private TableView<Account> tblAccounts;
@@ -80,11 +104,13 @@ public class AccountsController {
     private Button btDelete;
     @FXML
     private Button btMovement;
+    @FXML
+    private Button btPrint;
     
     private Stage stage;
 
     private Customer customer;
-
+    
     private AccountRESTClient client = new AccountRESTClient();
 
     private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
@@ -101,7 +127,7 @@ public class AccountsController {
             //Ventana no redimensionable
             stage.setResizable(false);
             //Controlador de menu
-            menuController.init(stage, root);
+            //menuController.init(stage, root);
             //Tabla editable
             tblAccounts.setEditable(true);
             //Factorias para el valor de celda
@@ -143,8 +169,9 @@ public class AccountsController {
             btUpdate.setOnAction(this::handleBtUpdateOnAction);
             btDelete.setOnAction(this::handleBtDeleteOnAction);
             btMovement.setOnAction(this::handleBtMovementOnAction);
+            btPrint.setOnAction(this::handleBtPrintOnAction);
             btExit.setOnAction(this::handleBtExitOnAction);
-
+            
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Account window initialized");
@@ -461,5 +488,59 @@ public class AccountsController {
         }
 
     }
+    @FXML
+    private void handleBtPrintOnAction(ActionEvent event) {
+        try{
+        LOGGER.info("Print Report");
+        JasperReport report=
+                JasperCompileManager.compileReport(getClass()
+                    .getResourceAsStream("/applicationcrud/ui/report/AccountReport.jrxml"));
+            //Data for the report: a collection of UserBean passed as a JRDataSource 
+            //implementation 
+            JRBeanCollectionDataSource dataItems=
+                    new JRBeanCollectionDataSource((Collection<Account>)this.tblAccounts.getItems());
+            //Map of parameter to be passed to the report
+            Map<String,Object> parameters=new HashMap<>();
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+            //Create and show the report window. The second parameter false value makes 
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+            jasperViewer.setVisible(true);
+        }catch(JRException ex){
+            LOGGER.warning(ex.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                    "Print Button error").showAndWait();
+        }
+        
+    }
+    @Override
+    public void onCreate() {
+        ActionEvent event = null;
+        handleBtPostOnAction(event);
+    }
+
+    @Override
+    public void onRefresh() {
+        setCustomer(customer);
+    }
+
+    @Override
+    public void onUpdate() {
+        ActionEvent event = null;
+        handleBtUpdateOnAction(event);
+    }
+
+    @Override
+    public void onDelete() {
+        ActionEvent event = null;
+        handleBtDeleteOnAction(event);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        menuIncludeController.setMenuActionsHandler(this);
+    }
+
 
 }

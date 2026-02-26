@@ -7,7 +7,10 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="applicationcrud.ui.AccountsController">
     <children>
-        <fx:include fx:id="menu" source="Menu.fxml" />
+        <!--fx:include fx:id="menu" source="Menu.fxml" /-->
+        <!--FIXME: NO TOCAR la siguiente modificación necesaria: fx:id deber tener el valor "menuInclude" -->
+        <fx:include fx:id="menuInclude" source="Menu.fxml" />
+        
         <TableView fx:id="tblAccounts" layoutX="20.0" layoutY="58.0" prefHeight="550.0" prefWidth="887.0">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="92.0" resizable="false" text="ID" />
@@ -30,20 +33,25 @@
                 <Font size="20.0" />
             </font>
         </Button>
-        <Button fx:id="btPost" disable="false" layoutX="922.0" layoutY="136.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Post">
+        <Button fx:id="btPost" disable="false" layoutX="922.0" layoutY="134.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Post">
             <tooltip>
                 <Tooltip text="Create a new account" />
             </tooltip>
         </Button>      
-        <Button fx:id="btUpdate" disable="true" layoutX="922.0" layoutY="302.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Update">
+        <Button fx:id="btUpdate" disable="true" layoutX="922.0" layoutY="253.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Update">
             <tooltip>
                 <Tooltip text="Update account" />
             </tooltip>
         </Button>
 
-        <Button fx:id="btDelete" disable="true" layoutX="922.0" layoutY="453.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete" textFill="#bc0f0f">
+        <Button fx:id="btDelete" disable="true" layoutX="922.0" layoutY="407.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Delete" textFill="#bc0f0f">
             <tooltip>
                 <Tooltip text="Delete account" />
+            </tooltip>
+        </Button>
+        <Button fx:id="btPrint" layoutX="922.0" layoutY="535.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="88.0" text="Print">
+            <tooltip>
+                <Tooltip text="Print Table" />
             </tooltip>
         </Button>
         <Button fx:id="btMovement" disable="true" layoutX="775.0" layoutY="635.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="132.0" text="Movements" textFill="#10da10">
