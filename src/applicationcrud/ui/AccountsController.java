@@ -9,11 +9,13 @@ import applicationcrud.logic.AccountRESTClient;
 import applicationcrud.model.Account;
 import applicationcrud.model.AccountType;
 import applicationcrud.model.Customer;
-import java.io.Serializable;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -47,7 +49,13 @@ import javafx.util.converter.DoubleStringConverter;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.GenericType;
-
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 /**
  *
  * @author Daniel
@@ -58,7 +66,7 @@ import javax.ws.rs.core.GenericType;
  * El método initialize debe llamar a setMenuActionsHandler() para establecer que este
  * controlador es el manejador de acciones del menú.
  */
-public class AccountsController implements Initializable, MenuActionsHandler {
+public class AccountsController implements Initializable, MenuActionsHandler{
     /**
      * TODO: NO TOCAR La siguiente referencia debe llamarse así y tener este tipo.
      * JavaFX asigna automáticamente el campo menuIncludeController cuando usas fx:id="menuInclude".
@@ -96,11 +104,13 @@ public class AccountsController implements Initializable, MenuActionsHandler {
     private Button btDelete;
     @FXML
     private Button btMovement;
+    @FXML
+    private Button btPrint;
     
     private Stage stage;
 
     private Customer customer;
-
+    
     private AccountRESTClient client = new AccountRESTClient();
 
     private static final Logger LOGGER = Logger.getLogger("applicationcrud.ui");
@@ -159,8 +169,9 @@ public class AccountsController implements Initializable, MenuActionsHandler {
             btUpdate.setOnAction(this::handleBtUpdateOnAction);
             btDelete.setOnAction(this::handleBtDeleteOnAction);
             btMovement.setOnAction(this::handleBtMovementOnAction);
+            btPrint.setOnAction(this::handleBtPrintOnAction);
             btExit.setOnAction(this::handleBtExitOnAction);
-
+            
             //Mostrar la ventana
             stage.show();
             LOGGER.info("Account window initialized");
@@ -477,12 +488,32 @@ public class AccountsController implements Initializable, MenuActionsHandler {
         }
 
     }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        menuIncludeController.setMenuActionsHandler(this);
+    @FXML
+    private void handleBtPrintOnAction(ActionEvent event) {
+        try{
+        LOGGER.info("Print Report");
+        JasperReport report=
+                JasperCompileManager.compileReport(getClass()
+                    .getResourceAsStream("/applicationcrud/ui/report/AccountReport.jrxml"));
+            //Data for the report: a collection of UserBean passed as a JRDataSource 
+            //implementation 
+            JRBeanCollectionDataSource dataItems=
+                    new JRBeanCollectionDataSource((Collection<Account>)this.tblAccounts.getItems());
+            //Map of parameter to be passed to the report
+            Map<String,Object> parameters=new HashMap<>();
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+            //Create and show the report window. The second parameter false value makes 
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+            jasperViewer.setVisible(true);
+        }catch(JRException ex){
+            LOGGER.warning(ex.getLocalizedMessage());
+            new Alert(Alert.AlertType.ERROR,
+                    "Print Button error").showAndWait();
+        }
+        
     }
-
     @Override
     public void onCreate() {
         ActionEvent event = null;
@@ -505,5 +536,11 @@ public class AccountsController implements Initializable, MenuActionsHandler {
         ActionEvent event = null;
         handleBtDeleteOnAction(event);
     }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        menuIncludeController.setMenuActionsHandler(this);
+    }
+
 
 }
