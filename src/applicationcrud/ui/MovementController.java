@@ -2,14 +2,23 @@ package applicationcrud.ui;
 
 import applicationcrud.logic.MovementRESTClient;
 import applicationcrud.model.Account;
+import applicationcrud.model.AccountType;
+import applicationcrud.model.Customer;
 import applicationcrud.model.Movement;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,7 +27,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.GenericType;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
+import static sun.misc.Signal.handle;
 
 /**
  * @todo @fixme Hacer que la siguiente clase implemente las interfaces 
@@ -45,6 +64,7 @@ public class MovementController {
     @FXML private Button btnDelete;
     @FXML private Label lblInfo;
     @FXML private Button btnCreate;
+    @FXML private Button btnPrint;
 
     private Account account;
     private final MovementRESTClient client = new MovementRESTClient();
@@ -73,6 +93,7 @@ public class MovementController {
             LOGGER.log(Level.SEVERE, "Error opening window", e);
             showError("Error Opening Window: " + e.getLocalizedMessage());
         }
+         
     }
 
     private void configureTableColumns() {
@@ -121,6 +142,7 @@ public class MovementController {
 
     @FXML
     private void handleCreate() {
+        handler.onCreate();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/applicationcrud/ui/MovementCreate.fxml"));
             Parent root = loader.load();
@@ -144,25 +166,83 @@ public class MovementController {
     @FXML
     private void handleSearch() { 
     try {
-        // ... tu código ...
+        
     } catch (Exception e) {
         showError("Error en la búsqueda");
     }
 }
 
     @FXML
-    private void handleDelete() {
-        Movement selected = tblMovements.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            // Lógica de borrado (ajustar según tu API)
-            String seleccion = selected.getId().toString();
-            client.remove(seleccion);
-            loadMovements();
-            LOGGER.info("Movement deleted.");
+     private void handleDelete() {
+         
+    // Obtener el elemento seleccionado por el usuario
+     Movement selected = tblMovements.getSelectionModel().getSelectedItem();
+    // Obtener la lista completa de la tabla
+     ObservableList<Movement> allMovements = tblMovements.getItems();
+
+    if (selected != null && !allMovements.isEmpty()) {
+        // Asumiendo que la lista está ordenada por fecha descendente (el index 0 es el más nuevo)
+        Movement latest = allMovements.get(0);
+
+        // Validamos que el seleccionado sea realmente el último
+        if (selected.equals(latest)) {
+            try {
+                String idToDelete = selected.getId().toString();
+                client.remove(idToDelete); // Borrado mediante el cliente REST
+                loadMovements(); // Recarga la tabla para ver los cambios
+                LOGGER.info("Último movimiento eliminado correctamente.");
+            } catch (Exception e) {
+                showError("Error al eliminar del servidor.");
+            }
+        } else {
+            showError("Operación no permitida: Solo puedes borrar el movimiento más reciente.");
         }
     }
+}
 
     private void showError(String message) {
         new Alert(Alert.AlertType.ERROR, message).showAndWait();
     }
+    
+    @FXML
+    private void handleRefresh() {
+        handler.onRefresh();
+    
+    }
+    @FXML
+    private void  handleUpdate(){
+        handler.onUpdate();
+    }
+    
+     @FXML
+    private void handleReport(ActionEvent event){
+        try {
+            LOGGER.info("Beginning printing action...");
+            JasperReport report=
+                JasperCompileManager.compileReport(getClass()
+                    .getResourceAsStream("/applicationcrud/ui/report/MovementReport.jrxml"));
+            //Data for the report: a collection of UserBean passed as a JRDataSource 
+            //implementation 
+            JRBeanCollectionDataSource dataItems=
+                    new JRBeanCollectionDataSource((Collection<Movement>)this.tblMovements.getItems());
+            //Map of parameter to be passed to the report
+            Map<String,Object> parameters=new HashMap<>();
+            //Fill report with data
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report,parameters,dataItems);
+            //Create and show the report window. The second parameter false value makes 
+            //report window not to close app.
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
+            jasperViewer.setVisible(true);
+           // jasperViewer.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        } catch (JRException ex) {
+            //If there is an error show message and
+            //log it.
+            showError("Error al imprimir:\n"+
+                            ex.getMessage());
+            LOGGER.log(Level.SEVERE,
+                        "UI GestionUsuariosController: Error printing report: {0}",
+                        ex.getMessage());
+        }
+    }
+    
 }
