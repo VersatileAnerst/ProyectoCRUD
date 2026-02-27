@@ -9,10 +9,13 @@ import applicationcrud.logic.AccountRESTClient;
 import applicationcrud.model.Account;
 import applicationcrud.model.AccountType;
 import applicationcrud.model.Customer;
+import java.io.Serializable;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -20,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -47,8 +51,20 @@ import javax.ws.rs.core.GenericType;
 /**
  *
  * @author Daniel
+ * @todo @fixme Hacer que la siguiente clase implemente las interfaces 
+ * Initializable y MenuActionsHandler para que al pulsar en las acciones CRUD del 
+ * menú Actions se ejecuten los métodos manejadores correspondientes a la vista 
+ * que incluye el menú.
+ * El método initialize debe llamar a setMenuActionsHandler() para establecer que este
+ * controlador es el manejador de acciones del menú.
  */
-public class AccountsController {
+public class AccountsController implements Initializable, MenuActionsHandler {
+    /**
+     * TODO: NO TOCAR La siguiente referencia debe llamarse así y tener este tipo.
+     * JavaFX asigna automáticamente el campo menuIncludeController cuando usas fx:id="menuInclude".
+     */
+    @FXML
+    private MenuController menuIncludeController;
 
     @FXML
     private TableView<Account> tblAccounts;
@@ -101,7 +117,7 @@ public class AccountsController {
             //Ventana no redimensionable
             stage.setResizable(false);
             //Controlador de menu
-            menuController.init(stage, root);
+            //menuController.init(stage, root);
             //Tabla editable
             tblAccounts.setEditable(true);
             //Factorias para el valor de celda
@@ -460,6 +476,34 @@ public class AccountsController {
                     "Movement Button error").showAndWait();
         }
 
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        menuIncludeController.setMenuActionsHandler(this);
+    }
+
+    @Override
+    public void onCreate() {
+        ActionEvent event = null;
+        handleBtPostOnAction(event);
+    }
+
+    @Override
+    public void onRefresh() {
+        setCustomer(customer);
+    }
+
+    @Override
+    public void onUpdate() {
+        ActionEvent event = null;
+        handleBtUpdateOnAction(event);
+    }
+
+    @Override
+    public void onDelete() {
+        ActionEvent event = null;
+        handleBtDeleteOnAction(event);
     }
 
 }

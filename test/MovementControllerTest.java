@@ -176,6 +176,10 @@ public class MovementControllerTest extends ApplicationTest {
         
     //}
 
-   
-
+   //@BeforeClass
+   //puclic static void setUpClass(){
+    // FxToolkit.registerPrimary
+//}
+//}//miarar datos en la tabla 
+//
 
